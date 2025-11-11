@@ -840,21 +840,24 @@ img {
   display: none;
   border: 1px solid var(--pd-border);
   border-radius: 999px;
-  padding: 0.35rem 0.5rem;
+  padding: 0.3rem 0.8rem;
   background: radial-gradient(circle at 0 0, rgba(20, 241, 255, 0.18), transparent 55%);
   cursor: pointer;
   align-items: center;
   justify-content: center;
-  gap: 3px;
 }
 
 .nav-toggle span {
-  display: block;
-  width: 16px;
-  height: 2px;
-  border-radius: 999px;
-  background: var(--pd-text);
+  /* Тука веќе не ни треба линија, туку текст */
+  width: auto;
+  height: auto;
+  background: none;
+  color: var(--pd-text);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
+
 
 .nav-mobile {
   display: none;
