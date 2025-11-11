@@ -1,26 +1,26 @@
 {
   "heroTitle": "Reach the Peak of Your Dispatch Operations",
-  "heroSubtitle": "PeakDispatch helps carriers and owner-operators maximize revenue with smarter, data-driven dispatch services.",
-  "heroPrimaryCta": "Get Started",
-  "heroSecondaryCta": "Schedule a Call",
+  "heroSubtitle": "PeakDispatch helps owner-operators and fleets increase revenue per truck with smarter, data-driven dispatch and exclusive market insight.",
+  "heroPrimaryCta": "Book Free Strategy Call",
+  "heroSecondaryCta": "Explore Services",
   "aboutTitle": "Why PeakDispatch?",
-  "aboutText": "We combine experienced dispatchers, data-driven decisions, and real-time communication to keep your trucks loaded with the best-paying freight.",
+  "aboutText": "We combine experienced dispatchers, live market data and structured reporting to keep your trucks loaded with the best-paying freight while you stay in control of your business.",
   "servicesTitle": "Services Tailored to Your Fleet",
   "services": [
     {
       "title": "Dedicated Dispatch",
-      "text": "End-to-end load booking, rate negotiation, paperwork and support for every single trip."
+      "text": "End-to-end load booking, rate negotiation, paperwork and on-road support for every single trip."
     },
     {
       "title": "Back-Office Support",
-      "text": "We handle rate confirmations, invoices, POD collection, and broker communication."
+      "text": "We handle rate confirmations, invoices, POD collection and broker communication so your team can focus on operations."
     },
     {
-      "title": "Growth Consulting",
-      "text": "Insights on lanes, equipment utilization and pricing that help you scale your business."
+      "title": "Growth & Lane Strategy",
+      "text": "Lane analysis, RPM insights and weekly executive recaps to help you scale profitably, not just drive more miles."
     }
   ],
-  "ctaBannerTitle": "Ready to reach the peak?",
-  "ctaBannerText": "Tell us more about your fleet and we will get in touch with a custom dispatch plan.",
-  "footerText": "\u00a9 {year} PeakDispatch. All rights reserved."
+  "ctaBannerTitle": "Ready to reach the next revenue peak?",
+  "ctaBannerText": "Tell us more about your fleet and we will schedule a free strategy call to walk through lanes, RPM and concrete opportunities.",
+  "footerText": "© {year} PeakDispatch. All rights reserved."
 }

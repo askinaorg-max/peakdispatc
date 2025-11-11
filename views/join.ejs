@@ -29,7 +29,7 @@
       <section class="form-card">
         <h1 class="form-title">Carrier onboarding</h1>
         <p class="form-subtitle">
-          Tell us about your company and equipment so we can prepare a tailored dispatch plan for your fleet.
+          Tell us about your company, equipment and goals so we can prepare a tailored dispatch plan and schedule a free strategy call.
         </p>
 
         <form method="POST" action="/join">
@@ -71,13 +71,24 @@
             </div>
             <div class="form-grid-full">
               <label class="label" for="equipmentType">Equipment type</label>
-              <input class="input" type="text" id="equipmentType" name="equipmentType" placeholder="Dry van, reefer, flatbed, box truck, power only..." />
+              <input
+                class="input"
+                type="text"
+                id="equipmentType"
+                name="equipmentType"
+                placeholder="Dry van, reefer, flatbed, box truck, power only..."
+              />
             </div>
             <div class="form-grid-full">
               <label class="label" for="hearAbout">How did you hear about PeakDispatch?</label>
-              <input class="input" type="text" id="hearAbout" name="hearAbout" placeholder="Referral, social media, YouTube, search..." />
+              <input
+                class="input"
+                type="text"
+                id="hearAbout"
+                name="hearAbout"
+                placeholder="Referral, social media, YouTube, search..."
+              />
             </div>
-
             <div class="form-grid-full">
               <label class="label" for="meetingDate">Preferred meeting date</label>
               <input class="input" type="date" id="meetingDate" name="meetingDate" />
@@ -92,16 +103,20 @@
                 <option value="Evening (19:00–21:00)">Evening (19:00–21:00)</option>
               </select>
             </div>
-
             <div class="form-grid-full">
               <label class="label" for="notes">Anything else we should know?</label>
-              <textarea class="textarea" id="notes" name="notes" placeholder="Preferred lanes, average RPM, special requirements..."></textarea>
+              <textarea
+                class="textarea"
+                id="notes"
+                name="notes"
+                placeholder="Preferred lanes, average RPM, special requirements..."
+              ></textarea>
             </div>
           </div>
 
           <div class="form-footer">
             <div class="form-note">
-              By submitting this form you agree to be contacted by the PeakDispatch team about dispatch services for your fleet.
+              By submitting this form you agree to be contacted by the PeakDispatch team about dispatch services and a free strategy call for your fleet.
             </div>
             <button class="btn btn-primary" type="submit">Submit onboarding</button>
           </div>

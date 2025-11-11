@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function setActiveLink(target) {
-    navLinks.forEach(link => {
+    navLinks.forEach((link) => {
       if (link.getAttribute('data-section-link') === target) {
         link.classList.add('nav-link-active');
       } else {
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function showSection(target) {
     if (!target) return;
-    const delay = 100 + Math.random() * 900;
+    const delay = 100 + Math.random() * 900; // 0.1–1 секунда
 
     if (loader) {
       loader.classList.remove('hidden');
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     setTimeout(() => {
-      sections.forEach(section => {
+      sections.forEach((section) => {
         if (section.getAttribute('data-section') === target) {
           section.classList.add('section-active');
         } else {
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, delay);
   }
 
-  navLinks.forEach(link => {
+  navLinks.forEach((link) => {
     link.addEventListener('click', (event) => {
       const target = link.getAttribute('data-section-link');
       if (target && document.querySelector('[data-section="' + target + '"]')) {
@@ -65,6 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Initialize default section
+  // Default секција
   showSection('about');
 });

@@ -12,11 +12,13 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Session config
-app.use(session({
-  secret: 'change_this_secret_peakdispatch',
-  resave: false,
-  saveUninitialized: false
-}));
+app.use(
+  session({
+    secret: 'change_this_secret_peakdispatch',
+    resave: false,
+    saveUninitialized: false
+  })
+);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -68,7 +70,7 @@ function saveBookings(bookings) {
   writeJsonSafe(BOOKINGS_FILE, bookings);
 }
 
-// Email transport
+// Email transport (Gmail app password)
 let mailTransport = null;
 if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
   mailTransport = nodemailer.createTransport({
@@ -79,13 +81,14 @@ if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
     }
   });
 } else {
-  console.warn('Email credentials not configured. Set EMAIL_USER and EMAIL_PASS in .env to enable notifications.');
+  console.warn(
+    'Email credentials not configured. Set EMAIL_USER and EMAIL_PASS in .env to enable notifications.'
+  );
 }
 
 async function sendNewSubmissionEmail(submission, booking) {
   if (!mailTransport) return;
 
-  const subject = 'New PeakDispatch onboarding submission';
   const lines = [
     `New onboarding submission received:`,
     '',
@@ -106,13 +109,11 @@ async function sendNewSubmissionEmail(submission, booking) {
     submission.notes || '(none)'
   ].filter(Boolean);
 
-  const textBody = lines.join('\n');
-
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to: 'websolution.mn@gmail.com',
-    subject,
-    text: textBody
+    subject: 'New PeakDispatch onboarding submission',
+    text: lines.join('\n')
   };
 
   try {
@@ -182,7 +183,6 @@ app.post('/join', async (req, res) => {
     saveBookings(bookings);
   }
 
-  // Fire email notification (async)
   try {
     await sendNewSubmissionEmail(submission, booking);
   } catch (err) {
@@ -192,7 +192,7 @@ app.post('/join', async (req, res) => {
   res.render('join-success', { submission });
 });
 
-// Simple admin auth (change these in production)
+// Simple admin auth
 const ADMIN_EMAIL = 'admin@peakdispatch.com';
 const ADMIN_PASSWORD = 'Admin@123';
 
@@ -218,8 +218,12 @@ app.get('/admin/logout', (req, res) => {
 
 app.get('/admin', requireAdmin, (req, res) => {
   const content = loadContent();
-  const submissions = loadSubmissions().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-  const bookings = loadBookings().sort((a, b) => new Date(a.meetingDate || a.createdAt) - new Date(b.meetingDate || b.createdAt));
+  const submissions = loadSubmissions().sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
+  const bookings = loadBookings().sort(
+    (a, b) => new Date(a.meetingDate || a.createdAt) - new Date(b.meetingDate || b.createdAt)
+  );
   res.render('admin', { content, submissions, bookings });
 });
 
@@ -234,7 +238,6 @@ app.post('/admin/content', requireAdmin, (req, res) => {
   content.aboutText = req.body.aboutText || content.aboutText;
   content.servicesTitle = req.body.servicesTitle || content.servicesTitle;
 
-  // Update services
   content.services = [
     {
       title: req.body.service1Title || '',
@@ -261,12 +264,11 @@ app.post('/admin/content', requireAdmin, (req, res) => {
 app.post('/admin/submissions/:id/delete', requireAdmin, (req, res) => {
   const id = req.params.id;
   let submissions = loadSubmissions();
-  submissions = submissions.filter(s => s.id !== id);
+  submissions = submissions.filter((s) => s.id !== id);
   saveSubmissions(submissions);
 
-  // Also remove associated bookings
   let bookings = loadBookings();
-  bookings = bookings.filter(b => b.submissionId !== id);
+  bookings = bookings.filter((b) => b.submissionId !== id);
   saveBookings(bookings);
 
   res.redirect('/admin');
@@ -276,7 +278,9 @@ app.post('/admin/bookings/:id/status', requireAdmin, (req, res) => {
   const id = req.params.id;
   const { status } = req.body;
   const bookings = loadBookings();
-  const updated = bookings.map(b => b.id === id ? { ...b, status: status || b.status } : b);
+  const updated = bookings.map((b) =>
+    b.id === id ? { ...b, status: status || b.status } : b
+  );
   saveBookings(updated);
   res.redirect('/admin');
 });
