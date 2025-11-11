@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const { v4: uuidv4 } = require('uuid');
 const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -71,23 +72,17 @@ function saveBookings(bookings) {
 }
 
 // Email transport (Gmail app password)
-let mailTransport = null;
-if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-  mailTransport = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS
-    }
-  });
+let resendClient = null;
+
+if (process.env.RESEND_API_KEY) {
+  resendClient = new Resend(process.env.RESEND_API_KEY);
 } else {
-  console.warn(
-    'Email credentials not configured. Set EMAIL_USER and EMAIL_PASS in .env to enable notifications.'
-  );
+  console.warn('RESEND_API_KEY not configured. Emails will not be sent.');
 }
 
+
 async function sendNewSubmissionEmail(submission, booking) {
-  if (!mailTransport) return;
+  if (!resendClient) return;
 
   const lines = [
     `New onboarding submission received:`,
@@ -109,20 +104,20 @@ async function sendNewSubmissionEmail(submission, booking) {
     submission.notes || '(none)'
   ].filter(Boolean);
 
-  const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: 'websolution.mn@gmail.com',
-    subject: 'New PeakDispatch onboarding submission',
-    text: lines.join('\n')
-  };
-
   try {
-    await mailTransport.sendMail(mailOptions);
-    console.log('Notification email sent for submission', submission.id);
+    await resendClient.emails.send({
+      from: 'PeakDispatch <no-reply@peakdispatch.test>', // или домен што ќе си го верификуваш кај Resend
+      to: ['websolution.mn@gmail.com'],
+      subject: 'New PeakDispatch onboarding submission',
+      text: lines.join('\n')
+    });
+
+    console.log('Notification email sent via Resend for submission', submission.id);
   } catch (err) {
-    console.error('Error sending notification email', err);
+    console.error('Error sending notification email via Resend', err);
   }
 }
+
 
 // Middleware
 function requireAdmin(req, res, next) {
