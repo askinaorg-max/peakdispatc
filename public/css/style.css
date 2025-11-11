@@ -946,3 +946,138 @@ img {
     align-items: flex-start;
   }
 }
+/* ============================
+   GLOBAL BACKGROUND & TEXT
+============================ */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: url('/images/background.png') no-repeat center center fixed;
+  background-size: cover;
+  color: #f1f1f1;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: -1;
+}
+
+h1, h2, h3 {
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+a, p, span {
+  color: #e8e8e8;
+}
+
+/* ============================
+   HERO / LIVE SNAPSHOT
+============================ */
+.hero-section {
+  padding: 80px 10%;
+  text-align: center;
+}
+
+.hero-card {
+  display: inline-block;
+  padding: 30px 50px;
+  border-radius: 16px;
+  background: rgba(15, 15, 15, 0.85);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+}
+
+.snapshot-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0;
+  font-size: 0.8rem;
+}
+
+.snapshot-row strong {
+  color: #00baff;
+  font-size: 0.9rem;
+}
+
+/* ============================
+   ANIMATED ROAD + TRUCK
+============================ */
+.road-container {
+  position: relative;
+  width: 100%;
+  height: 90px;
+  margin-top: 40px;
+  background: linear-gradient(to bottom, #111, #1a1a1a);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.road-line {
+  position: absolute;
+  top: 45px;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: repeating-linear-gradient(to right, #000 0 20px, #fff 20px 40px);
+  animation: roadMove 15s linear infinite;
+  opacity: 0.6;
+}
+
+@keyframes roadMove {
+  from { background-position-x: 0; }
+  to { background-position-x: 1000px; }
+}
+
+.truck {
+  position: absolute;
+  bottom: 20px;
+  left: -120px;
+  width: 120px;
+  height: 60px;
+  background: url('https://cdn-icons-png.flaticon.com/512/1995/1995476.png') no-repeat center;
+  background-size: contain;
+  animation: truckMove 21600s linear infinite;
+}
+
+@keyframes truckMove {
+  0%   { left: -150px; }
+  100% { left: calc(100% + 150px); }
+}
+
+/* ============================
+   NIGHT/DAY TRANSITION
+============================ */
+.day-mode body::before {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.day-mode .hero-card {
+  background: rgba(255, 255, 255, 0.8);
+  color: #111;
+}
+
+/* ============================
+   BUTTONS
+============================ */
+.btn {
+  background: #00baff;
+  border: none;
+  color: #fff;
+  padding: 12px 26px;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background: #007da5;
+}

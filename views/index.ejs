@@ -88,36 +88,32 @@
             </div>
           </div>
 
-          <aside class="hero-right">
-            <div class="hero-card">
-              <div class="hero-card-header">
-                <div>
-                  <div class="hero-card-title">Live Dispatch Snapshot</div>
-                  <div style="font-size:0.78rem;color:var(--pd-muted);">
-                    Example view of how we monitor your fleet in real time.
-                  </div>
-                </div>
-                <span class="badge">Peak Mode</span>
-              </div>
-              <div class="hero-timeline">
-                <div class="timeline-row">
-                  <span>Booked loads today</span>
-                  <strong>32</strong>
-                </div>
-                <div class="timeline-row">
-                  <span>Best paying lane</span>
-                  <strong>Chicago → Dallas</strong>
-                </div>
-                <div class="timeline-row">
-                  <span>Average RPM (reefers)</span>
-                  <strong>$3.12</strong>
-                </div>
-              </div>
-              <div class="hero-graph">
-                <div class="hero-graph-line"></div>
-              </div>
-            </div>
-          </aside>
+          <section class="hero-section">
+  <h1>Live Dispatch Snapshot</h1>
+  <p>Example view of how we monitor your fleet in real time.</p>
+
+  <div class="hero-card" id="liveCard">
+    <div class="snapshot-row">
+      <span>Booked loads today</span>
+      <strong id="loadsToday">32</strong>
+    </div>
+    <div class="snapshot-row">
+      <span>Best paying lane</span>
+      &nbsp&nbsp<strong id="bestLane">Chicago → Dallas</strong>
+    </div>
+    <div class="snapshot-row">
+      <span>Average RPM (reefers)</span>
+      <strong id="avgRpm">$3.12</strong>
+    </div>
+
+    <!-- Animated road -->
+    <div class="road-container">
+      <div class="road-line"></div>
+      <div class="truck"></div>
+    </div>
+  </div>
+
+
         </div>
       </section>
 

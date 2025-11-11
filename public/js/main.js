@@ -68,3 +68,59 @@ document.addEventListener('DOMContentLoaded', () => {
   // Default секција
   showSection('about');
 });
+// ====== Live Dispatch Animation and Data Logic ======
+document.addEventListener("DOMContentLoaded", () => {
+  const loadsEl = document.getElementById("loadsToday");
+  const laneEl = document.getElementById("bestLane");
+  const rpmEl = document.getElementById("avgRpm");
+
+  if (!loadsEl) return;
+
+  const lanes = [
+    ["Chicago", "Dallas"],
+    ["Atlanta", "Miami"],
+    ["Los Angeles", "Phoenix"],
+    ["New York", "Cleveland"],
+    ["Houston", "Kansas City"],
+    ["Denver", "Seattle"],
+    ["Memphis", "Orlando"],
+    ["St. Louis", "Detroit"],
+    ["Nashville", "Columbus"],
+    ["Charlotte", "Baltimore"]
+  ];
+
+  function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function randomFloat(min, max, decimals = 2) {
+    const val = Math.random() * (max - min) + min;
+    return val.toFixed(decimals);
+  }
+
+  function updateSnapshot() {
+    const loads = randomInt(30, 46);
+    const [from, to] = lanes[Math.floor(Math.random() * lanes.length)];
+    const rpm = randomFloat(2.93, 4.19);
+
+    loadsEl.textContent = loads;
+    laneEl.textContent = `${from} → ${to}`;
+    rpmEl.textContent = `$${rpm}`;
+  }
+
+  // иницијално
+  updateSnapshot();
+
+  // ажурирање на секои 18 часа (64800000 ms)
+  setInterval(updateSnapshot, 64800000);
+
+  // Ден/ноќ режим на секои 12 часа
+  let isDay = false;
+  function toggleDayNight() {
+    document.body.classList.toggle("day-mode", isDay);
+    isDay = !isDay;
+  }
+
+  // на секои 12 часа
+  setInterval(toggleDayNight, 43200000);
+});
