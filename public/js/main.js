@@ -2,6 +2,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const loader = document.getElementById('section-loader');
   const sections = document.querySelectorAll('.dynamic-section');
   const navLinks = document.querySelectorAll('[data-section-link]');
+  const navToggle = document.getElementById('navToggle');
+  const navMobile = document.getElementById('navMobile');
+
+  function closeMobileNav() {
+    if (navMobile) {
+      navMobile.classList.remove('open');
+    }
+  }
 
   function setActiveLink(target) {
     navLinks.forEach(link => {
@@ -15,7 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function showSection(target) {
     if (!target) return;
-    // Random delay between 0.1s and 1s
     const delay = 100 + Math.random() * 900;
 
     if (loader) {
@@ -46,10 +53,17 @@ document.addEventListener('DOMContentLoaded', () => {
       const target = link.getAttribute('data-section-link');
       if (target && document.querySelector('[data-section="' + target + '"]')) {
         event.preventDefault();
+        closeMobileNav();
         showSection(target);
       }
     });
   });
+
+  if (navToggle && navMobile) {
+    navToggle.addEventListener('click', () => {
+      navMobile.classList.toggle('open');
+    });
+  }
 
   // Initialize default section
   showSection('about');

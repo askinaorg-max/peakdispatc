@@ -8,6 +8,7 @@
 </head>
 <body>
   <div class="page">
+
     <header class="nav">
       <div class="nav-inner">
         <div class="nav-left">
@@ -26,8 +27,22 @@
           <a href="#" data-section-link="contact">Contact</a>
         </nav>
         <div class="nav-cta">
-          <a href="/join" class="btn btn-outline">Join as Carrier</a>
-          <a href="/join" class="btn btn-primary">Get Started</a>
+          <a href="/join" class="btn btn-outline nav-cta-desktop">Join as Carrier</a>
+          <a href="/join" class="btn btn-primary nav-cta-desktop">Get Started</a>
+          <button class="nav-toggle" type="button" id="navToggle" aria-label="Toggle navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+      <div class="nav-mobile" id="navMobile">
+        <div class="nav-mobile-inner">
+          <a href="#" data-section-link="about" class="nav-mobile-link">About</a>
+          <a href="#" data-section-link="services" class="nav-mobile-link">Services</a>
+          <a href="#" data-section-link="how-it-works" class="nav-mobile-link">How it works</a>
+          <a href="#" data-section-link="contact" class="nav-mobile-link">Contact</a>
+          <a href="/join" class="btn btn-primary nav-mobile-cta">Join as Carrier</a>
         </div>
       </div>
     </header>
