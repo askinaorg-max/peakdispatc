@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin – PeakDispatch</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="nav">
+      <div class="nav-inner">
+        <div class="nav-left">
+          <div class="logo-wrap">
+            <img src="/images/peakdispatch-logo.png" alt="PeakDispatch logo" />
+          </div>
+          <div class="brand-text">
+            <span>PeakDispatch</span>
+            <span>Admin console</span>
+          </div>
+        </div>
+        <div class="nav-cta">
+          <a href="/" class="btn btn-outline">View site</a>
+          <a href="/admin/logout" class="btn btn-primary">Sign out</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="admin-layout">
+        <aside class="admin-sidebar">
+          <nav class="admin-nav">
+            <span style="font-size:0.78rem;color:var(--pd-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.3rem;">Navigation</span>
+            <a href="#content">Site content</a>
+            <a href="#submissions">Onboarding submissions</a>
+            <a href="#bookings">Booked meetings</a>
+          </nav>
+        </aside>
+        <section class="admin-main">
+          <section id="content" style="margin-bottom:2rem;">
+            <h2 class="admin-section-title">Site content</h2>
+            <p style="font-size:0.85rem;color:var(--pd-muted);margin-bottom:1rem;">
+              Update the main marketing copy used on the public PeakDispatch landing page.
+            </p>
+
+            <form method="POST" action="/admin/content">
+              <div class="form-grid">
+                <div class="form-grid-full">
+                  <label class="label" for="heroTitle">Hero title</label>
+                  <input class="input" type="text" id="heroTitle" name="heroTitle" value="<%= content.heroTitle %>" />
+                </div>
+                <div class="form-grid-full">
+                  <label class="label" for="heroSubtitle">Hero subtitle</label>
+                  <textarea class="textarea" id="heroSubtitle" name="heroSubtitle"><%= content.heroSubtitle %></textarea>
+                </div>
+                <div>
+                  <label class="label" for="heroPrimaryCta">Primary CTA label</label>
+                  <input class="input" type="text" id="heroPrimaryCta" name="heroPrimaryCta" value="<%= content.heroPrimaryCta %>" />
+                </div>
+                <div>
+                  <label class="label" for="heroSecondaryCta">Secondary CTA label</label>
+                  <input class="input" type="text" id="heroSecondaryCta" name="heroSecondaryCta" value="<%= content.heroSecondaryCta %>" />
+                </div>
+
+                <div class="form-grid-full">
+                  <label class="label" for="aboutTitle">About section title</label>
+                  <input class="input" type="text" id="aboutTitle" name="aboutTitle" value="<%= content.aboutTitle %>" />
+                </div>
+                <div class="form-grid-full">
+                  <label class="label" for="aboutText">About section text</label>
+                  <textarea class="textarea" id="aboutText" name="aboutText"><%= content.aboutText %></textarea>
+                </div>
+
+                <div class="form-grid-full">
+                  <label class="label" for="servicesTitle">Services section title</label>
+                  <input class="input" type="text" id="servicesTitle" name="servicesTitle" value="<%= content.servicesTitle %>" />
+                </div>
+
+                <div class="form-grid-full">
+                  <label class="label">Service cards</label>
+                </div>
+                <div class="form-grid-full">
+                  <label class="label" for="service1Title">Service 1 title</label>
+                  <input class="input" type="text" id="service1Title" name="service1Title" value="<%= content.services[0].title %>" />
+                </div>
+                <div class="form-grid-full">
+                  <label class="label" for="service1Text">Service 1 text</label>
+                  <textarea class="textarea" id="service1Text" name="service1Text"><%= content.services[0].text %></textarea>
+                </div>
+
+                <div class="form-grid-full">
+                  <label class="label" for="service2Title">Service 2 title</label>
+                  <input class="input" type="text" id="service2Title" name="service2Title" value="<%= content.services[1].title %>" />
+                </div>
+                <div class="form-grid-full">
+                  <label class="label" for="service2Text">Service 2 text</label>
+                  <textarea class="textarea" id="service2Text" name="service2Text"><%= content.services[1].text %></textarea>
+                </div>
+
+                <div class="form-grid-full">
+                  <label class="label" for="service3Title">Service 3 title</label>
+                  <input class="input" type="text" id="service3Title" name="service3Title" value="<%= content.services[2].title %>" />
+                </div>
+                <div class="form-grid-full">
+                  <label class="label" for="service3Text">Service 3 text</label>
+                  <textarea class="textarea" id="service3Text" name="service3Text"><%= content.services[2].text %></textarea>
+                </div>
+
+                <div class="form-grid-full">
+                  <label class="label" for="ctaBannerTitle">CTA banner title</label>
+                  <input class="input" type="text" id="ctaBannerTitle" name="ctaBannerTitle" value="<%= content.ctaBannerTitle %>" />
+                </div>
+                <div class="form-grid-full">
+                  <label class="label" for="ctaBannerText">CTA banner text</label>
+                  <textarea class="textarea" id="ctaBannerText" name="ctaBannerText"><%= content.ctaBannerText %></textarea>
+                </div>
+
+                <div class="form-grid-full">
+                  <label class="label" for="footerText">Footer text</label>
+                  <input class="input" type="text" id="footerText" name="footerText" value="<%= content.footerText %>" />
+                </div>
+              </div>
+
+              <div style="margin-top:1rem;display:flex;justify-content:flex-end;">
+                <button class="btn btn-primary" type="submit">Save changes</button>
+              </div>
+            </form>
+          </section>
+
+          <section id="submissions">
+            <h2 class="admin-section-title">Onboarding submissions</h2>
+            <p style="font-size:0.85rem;color:var(--pd-muted);margin-bottom:1rem;">
+              Every carrier that fills in the onboarding form appears here. You can review and delete entries after processing them.
+            </p>
+
+            <% if (submissions.length === 0) { %>
+              <p style="font-size:0.86rem;color:var(--pd-muted);">No submissions yet.</p>
+            <% } else { %>
+              <div style="overflow:auto;border-radius:1rem;border:1px solid var(--pd-border);">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Submitted</th>
+                      <th>Company</th>
+                      <th>Contact</th>
+                      <th>Fleet size</th>
+                      <th>Equipment</th>
+                      <th>Source</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% submissions.forEach(function(s) { %>
+                      <tr>
+                        <td><%= new Date(s.createdAt).toLocaleString() %></td>
+                        <td><%= s.company %></td>
+                        <td>
+                          <strong><%= s.firstName %> <%= s.lastName %></strong><br />
+                          <span><%= s.email %></span><br />
+                          <span><%= s.phone %></span>
+                        </td>
+                        <td><span class="badge-pill"><%= s.fleetSize || 'n/a' %></span></td>
+                        <td><%= s.equipmentType || '-' %></td>
+                        <td><%= s.hearAbout || '-' %></td>
+                        <td>
+                          <form method="POST" action="/admin/submissions/<%= s.id %>/delete" onsubmit="return confirm('Delete this submission?');">
+                            <button class="btn btn-outline" type="submit">Delete</button>
+                          </form>
+                        </td>
+                      </tr>
+                    <% }) %>
+                  </tbody>
+                </table>
+              </div>
+            <% } %>
+
+          </section>
+
+          <section id="bookings" style="margin-top:2.5rem;">
+            <h2 class="admin-section-title">Booked meetings</h2>
+            <p style="font-size:0.85rem;color:var(--pd-muted);margin-bottom:1rem;">
+              Every time a carrier requests a meeting, the booking appears here. Update the status as you confirm or reschedule calls.
+            </p>
+
+            <% if (!bookings || bookings.length === 0) { %>
+              <p style="font-size:0.86rem;color:var(--pd-muted);">No meeting requests yet.</p>
+            <% } else { %>
+              <div style="overflow:auto;border-radius:1rem;border:1px solid var(--pd-border);">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Time slot</th>
+                      <th>Company</th>
+                      <th>Contact</th>
+                      <th>Status</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% bookings.forEach(function(b) { 
+                         const sub = submissions.find(s => s.id === b.submissionId) || {}; %>
+                      <tr>
+                        <td><%= b.meetingDate || '-' %></td>
+                        <td><%= b.timeSlot || '-' %></td>
+                        <td><%= sub.company || '-' %></td>
+                        <td>
+                          <strong><%= (sub.firstName || '') + ' ' + (sub.lastName || '') %></strong><br />
+                          <span><%= sub.email || '' %></span><br />
+                          <span><%= sub.phone || '' %></span>
+                        </td>
+                        <td>
+                          <span class="badge-pill"><%= b.status %></span>
+                        </td>
+                        <td>
+                          <form method="POST" action="/admin/bookings/<%= b.id %>/status" style="display:flex;gap:0.35rem;align-items:center;">
+                            <select class="select" name="status" style="max-width:130px;padding-block:0.25rem;font-size:0.75rem;">
+                              <option value="pending" <%= b.status === 'pending' ? 'selected' : '' %>>Pending</option>
+                              <option value="confirmed" <%= b.status === 'confirmed' ? 'selected' : '' %>>Confirmed</option>
+                              <option value="completed" <%= b.status === 'completed' ? 'selected' : '' %>>Completed</option>
+                              <option value="cancelled" <%= b.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
+                            </select>
+                            <button class="btn btn-outline" type="submit" style="padding-inline:0.7rem;">Update</button>
+                          </form>
+                        </td>
+                      </tr>
+                    <% }) %>
+                  </tbody>
+                </table>
+              </div>
+            <% } %>
+          </section>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">
+      © <script>document.write(new Date().getFullYear())</script> PeakDispatch. Admin console.
+    </footer>
+  </div>
+</body>
+</html>

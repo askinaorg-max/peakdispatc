@@ -1,0 +1,26 @@
+{
+  "heroTitle": "Reach the Peak of Your Dispatch Operations",
+  "heroSubtitle": "PeakDispatch helps carriers and owner-operators maximize revenue with smarter, data-driven dispatch services.",
+  "heroPrimaryCta": "Get Started",
+  "heroSecondaryCta": "Schedule a Call",
+  "aboutTitle": "Why PeakDispatch?",
+  "aboutText": "We combine experienced dispatchers, data-driven decisions, and real-time communication to keep your trucks loaded with the best-paying freight.",
+  "servicesTitle": "Services Tailored to Your Fleet",
+  "services": [
+    {
+      "title": "Dedicated Dispatch",
+      "text": "End-to-end load booking, rate negotiation, paperwork and support for every single trip."
+    },
+    {
+      "title": "Back-Office Support",
+      "text": "We handle rate confirmations, invoices, POD collection, and broker communication."
+    },
+    {
+      "title": "Growth Consulting",
+      "text": "Insights on lanes, equipment utilization and pricing that help you scale your business."
+    }
+  ],
+  "ctaBannerTitle": "Ready to reach the peak?",
+  "ctaBannerText": "Tell us more about your fleet and we will get in touch with a custom dispatch plan.",
+  "footerText": "\u00a9 {year} PeakDispatch. All rights reserved."
+}

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Thank you – PeakDispatch</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="nav">
+      <div class="nav-inner">
+        <div class="nav-left">
+          <div class="logo-wrap">
+            <img src="/images/peakdispatch-logo.png" alt="PeakDispatch logo" />
+          </div>
+          <div class="brand-text">
+            <span>PeakDispatch</span>
+            <span>Dispatch at Peak Performance</span>
+          </div>
+        </div>
+        <div class="nav-cta">
+          <a href="/" class="btn btn-outline">Back to site</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="login-wrapper">
+      <section class="form-card">
+        <h1 class="form-title">Thank you for reaching out</h1>
+        <p class="form-subtitle">
+          We have received your onboarding details. A PeakDispatch specialist will contact you shortly.
+        </p>
+
+        <div style="font-size:0.86rem;color:var(--pd-muted);line-height:1.6;">
+          <p><strong>Name:</strong> <%= submission.firstName %> <%= submission.lastName %></p>
+          <p><strong>Company:</strong> <%= submission.company %></p>
+          <p><strong>Email:</strong> <%= submission.email %></p>
+          <p><strong>Fleet size:</strong> <%= submission.fleetSize %></p>
+        </div>
+
+        <div style="margin-top:1.4rem;display:flex;gap:0.7rem;flex-wrap:wrap;">
+          <a href="/" class="btn btn-primary">Back to homepage</a>
+          <a href="/join" class="btn btn-outline">Submit another company</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      © <script>document.write(new Date().getFullYear())</script> PeakDispatch. All rights reserved.
+    </footer>
+  </div>
+</body>
+</html>

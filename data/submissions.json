@@ -1,0 +1,16 @@
+[
+  {
+    "id": "c4967937-bddb-405f-9327-052d93334a6a",
+    "createdAt": "2025-11-11T08:37:29.755Z",
+    "firstName": "Martin",
+    "lastName": "Nikolov",
+    "email": "mar_nikolov@outlook.com",
+    "phone": "12312",
+    "company": "tst",
+    "country": "United Kingdom",
+    "fleetSize": "1-truck",
+    "equipmentType": "dada",
+    "hearAbout": "dada",
+    "notes": "dada"
+  }
+]

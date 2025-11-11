@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Login – PeakDispatch</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="nav">
+      <div class="nav-inner">
+        <div class="nav-left">
+          <div class="logo-wrap">
+            <img src="/images/peakdispatch-logo.png" alt="PeakDispatch logo" />
+          </div>
+          <div class="brand-text">
+            <span>PeakDispatch</span>
+            <span>Admin console</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="login-wrapper">
+      <section class="form-card">
+        <h1 class="form-title">Admin sign in</h1>
+        <p class="form-subtitle">
+          Enter your admin credentials to manage the website content and review onboarding requests.
+        </p>
+
+        <% if (error) { %>
+        <div class="alert alert-danger"><%= error %></div>
+        <% } %>
+
+        <form method="POST" action="/admin/login">
+          <div class="form-grid">
+            <div class="form-grid-full">
+              <label class="label" for="email">Email</label>
+              <input class="input" type="email" id="email" name="email" required />
+            </div>
+            <div class="form-grid-full">
+              <label class="label" for="password">Password</label>
+              <input class="input" type="password" id="password" name="password" required />
+            </div>
+          </div>
+
+          <div class="form-footer">
+            <span></span>
+            <button class="btn btn-primary" type="submit">Sign in</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <footer class="footer">
+      © <script>document.write(new Date().getFullYear())</script> PeakDispatch. All rights reserved.
+    </footer>
+  </div>
+</body>
+</html>

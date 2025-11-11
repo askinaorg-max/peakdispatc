@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PeakDispatch – Premium Truck Dispatch Services</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="nav">
+      <div class="nav-inner">
+        <div class="nav-left">
+          <div class="logo-wrap">
+            <img src="/images/peakdispatch-logo.png" alt="PeakDispatch logo" />
+          </div>
+          <div class="brand-text">
+            <span>PeakDispatch</span>
+            <span>Dispatch at Peak Performance</span>
+          </div>
+        </div>
+        <nav class="nav-links">
+          <a href="#" data-section-link="about">About</a>
+          <a href="#" data-section-link="services">Services</a>
+          <a href="#" data-section-link="how-it-works">How it works</a>
+          <a href="#" data-section-link="contact">Contact</a>
+        </nav>
+        <div class="nav-cta">
+          <a href="/join" class="btn btn-outline">Join as Carrier</a>
+          <a href="/join" class="btn btn-primary">Get Started</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Loader overlay with logo and circular progress -->
+    <div id="section-loader" class="loader-overlay hidden">
+      <div class="loader-inner">
+        <div class="loader-logo">
+          <img src="/images/peakdispatch-logo.png" alt="PeakDispatch logo loading" />
+          <div class="loader-ring"></div>
+        </div>
+      </div>
+    </div>
+
+    <main>
+      <section class="hero">
+        <div class="hero-inner">
+          <div>
+            <div class="hero-label">
+              <span class="hero-label-dot"></span>
+              <span>Independent Dispatch • North America</span>
+            </div>
+            <h1 class="hero-title">
+              <span><%= content.heroTitle %></span>
+            </h1>
+            <p class="hero-subtitle"><%= content.heroSubtitle %></p>
+
+            <div class="hero-buttons">
+              <a href="/join" class="btn btn-primary"><%= content.heroPrimaryCta %></a>
+              <a href="#" data-section-link="services" class="btn btn-outline"><%= content.heroSecondaryCta %></a>
+            </div>
+
+            <div class="hero-metrics">
+              <div class="metric">
+                <span class="metric-value">24/7</span>
+                <span class="metric-label">Dedicated dispatch support</span>
+              </div>
+              <div class="metric">
+                <span class="metric-value">+18%</span>
+                <span class="metric-label">Average revenue per truck uplift*</span>
+              </div>
+              <div class="metric">
+                <span class="metric-value">3 min</span>
+                <span class="metric-label">Average response time</span>
+              </div>
+            </div>
+          </div>
+
+          <aside class="hero-right">
+            <div class="hero-card">
+              <div class="hero-card-header">
+                <div>
+                  <div class="hero-card-title">Live Dispatch Snapshot</div>
+                  <div style="font-size:0.78rem;color:var(--pd-muted);">Example view of how we monitor your fleet in real time.</div>
+                </div>
+                <span class="badge">Peak Mode</span>
+              </div>
+              <div class="hero-timeline">
+                <div class="timeline-row">
+                  <span>Booked loads today</span>
+                  <strong>32</strong>
+                </div>
+                <div class="timeline-row">
+                  <span>Best paying lane</span>
+                  <strong>Chicago → Dallas</strong>
+                </div>
+                <div class="timeline-row">
+                  <span>Average RPM (reefers)</span>
+                  <strong>$3.12</strong>
+                </div>
+              </div>
+              <div class="hero-graph">
+                <div class="hero-graph-line"></div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="about" class="section dynamic-section" data-section="about">
+        <div class="section-inner">
+          <div class="section-header">
+            <div>
+              <div class="section-kicker">About PeakDispatch</div>
+              <h2 class="section-title"><%= content.aboutTitle %></h2>
+            </div>
+            <p class="section-description"><%= content.aboutText %></p>
+          </div>
+
+          <div class="about-grid">
+            <div class="about-block">
+              <h3 class="card-title">For owner-operators</h3>
+              <p class="card-text">
+                Keep your truck loaded with premium freight while we negotiate rates, handle back-office work and watch the market for you.
+              </p>
+              <ul class="bullet-list">
+                <li>Hands-off dispatch while you stay in control of lanes and schedule.</li>
+                <li>Transparent pricing and no long-term lock-in.</li>
+                <li>Weekly performance reports with RPM, lane and broker insights.</li>
+              </ul>
+            </div>
+            <div class="about-block">
+              <h3 class="card-title">For growing fleets</h3>
+              <p class="card-text">
+                Use PeakDispatch as a strategic control room for your 5–50+ truck operation.
+              </p>
+              <ul class="bullet-list">
+                <li>Centralized planning for multi-truck operations and dedicated lanes.</li>
+                <li>Lane and capacity recommendations based on real-time load board data.</li>
+                <li>Optional executive recap calls to review numbers and set weekly focus.</li>
+              </ul>
+            </div>
+            <div class="about-note">
+              <div class="badge-pill">Free strategy call</div>
+              <p>
+                Every new carrier receives a <strong>complimentary 30‑minute dispatch strategy session</strong> —
+                no obligation, just practical advice based on your numbers and lanes.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="services" class="section dynamic-section" data-section="services">
+        <div class="section-inner">
+          <div class="section-header">
+            <div>
+              <div class="section-kicker">Services</div>
+              <h2 class="section-title"><%= content.servicesTitle %></h2>
+            </div>
+            <p class="section-description">
+              From solo owner-operators to growing fleets, we plug into your operation and keep your trucks moving with profitable loads and clear communication.
+            </p>
+          </div>
+
+          <div class="card-grid">
+            <% content.services.forEach(function(service) { %>
+              <article class="card">
+                <h3 class="card-title"><%= service.title %></h3>
+                <p class="card-text"><%= service.text %></p>
+              </article>
+            <% }) %>
+          </div>
+
+          <div class="services-extra">
+            <div>
+              <h3 class="card-title">Free consultation, real numbers</h3>
+              <p class="card-text">
+                Our consultations and discovery calls are <strong>100% free</strong>. 
+                We walk through your current lanes, RPM and utilization and share 
+                what similar carriers are doing to reach the next revenue band.
+              </p>
+            </div>
+            <div>
+              <h3 class="card-title">Exclusive market insight</h3>
+              <p class="card-text">
+                We aggregate live data from multiple load boards and direct shipper relationships.
+                That means you see opportunities and lanes that are often invisible to the open market.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="how-it-works" class="section dynamic-section" data-section="how-it-works">
+        <div class="section-inner">
+          <div class="section-header">
+            <div>
+              <div class="section-kicker">Process</div>
+              <h2 class="section-title">How working with PeakDispatch feels</h2>
+            </div>
+            <p class="section-description">
+              We keep things simple, transparent and structured so you always know what is happening with your trucks and your revenue.
+            </p>
+          </div>
+
+          <div class="card-grid">
+            <article class="card">
+              <h3 class="card-title">01 — Discovery & fit</h3>
+              <p class="card-text">
+                On a short discovery call we review your current operation, targets and lanes. 
+                You receive honest feedback on whether PeakDispatch can realistically move the needle for you.
+              </p>
+            </article>
+            <article class="card">
+              <h3 class="card-title">02 — Onboarding & setup</h3>
+              <p class="card-text">
+                We configure communication channels, carrier packets, preferred lanes and escalation rules. 
+                Larger fleets can add owner, ops and finance stakeholders to a shared reporting space.
+              </p>
+            </article>
+            <article class="card">
+              <h3 class="card-title">03 — Daily dispatch & reviews</h3>
+              <p class="card-text">
+                Our dispatchers keep your trucks loaded while you get <strong>weekly executive recaps</strong> 
+                with RPM, lane and margin views plus concrete actions for the upcoming week.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" class="section dynamic-section" data-section="contact">
+        <div class="section-inner">
+          <div class="cta-banner">
+            <div class="cta-banner-text">
+              <h2 class="cta-banner-title"><%= content.ctaBannerTitle %></h2>
+              <p><%= content.ctaBannerText %></p>
+              <p style="margin-top:0.7rem;font-size:0.86rem;">
+                Consultations and intro calls are <strong>completely free</strong>.
+                We focus on sharing practical, exclusive market insight so that even 
+                if we do not work together, the conversation is still valuable for your business.
+              </p>
+            </div>
+            <div class="cta-actions">
+              <a href="/join" class="btn btn-primary">Request free strategy call</a>
+              <a href="/join" class="btn btn-outline">Join as Carrier</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <%= footerText %>
+    </footer>
+  </div>
+  <script src="/js/main.js"></script>
+</body>
+</html>

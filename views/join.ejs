@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Join PeakDispatch – Carrier Onboarding</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="nav">
+      <div class="nav-inner">
+        <div class="nav-left">
+          <div class="logo-wrap">
+            <img src="/images/peakdispatch-logo.png" alt="PeakDispatch logo" />
+          </div>
+          <div class="brand-text">
+            <span>PeakDispatch</span>
+            <span>Dispatch at Peak Performance</span>
+          </div>
+        </div>
+        <div class="nav-cta">
+          <a href="/" class="btn btn-outline">Back to site</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="login-wrapper">
+      <section class="form-card">
+        <h1 class="form-title">Carrier onboarding</h1>
+        <p class="form-subtitle">
+          Tell us about your company and equipment so we can prepare a tailored dispatch plan for your fleet.
+        </p>
+
+        <form method="POST" action="/join">
+          <div class="form-grid">
+            <div>
+              <label class="label" for="firstName">First name</label>
+              <input class="input" type="text" id="firstName" name="firstName" required />
+            </div>
+            <div>
+              <label class="label" for="lastName">Last name</label>
+              <input class="input" type="text" id="lastName" name="lastName" required />
+            </div>
+            <div>
+              <label class="label" for="email">Work email</label>
+              <input class="input" type="email" id="email" name="email" required />
+            </div>
+            <div>
+              <label class="label" for="phone">Phone / WhatsApp</label>
+              <input class="input" type="text" id="phone" name="phone" required />
+            </div>
+            <div class="form-grid-full">
+              <label class="label" for="company">Company name</label>
+              <input class="input" type="text" id="company" name="company" required />
+            </div>
+            <div>
+              <label class="label" for="country">Country / State</label>
+              <input class="input" type="text" id="country" name="country" placeholder="e.g. USA – Illinois" />
+            </div>
+            <div>
+              <label class="label" for="fleetSize">Fleet size</label>
+              <select class="select" id="fleetSize" name="fleetSize" required>
+                <option value="">Select...</option>
+                <option value="1-truck">1 truck</option>
+                <option value="2-5-trucks">2–5 trucks</option>
+                <option value="6-10-trucks">6–10 trucks</option>
+                <option value="11-20-trucks">11–20 trucks</option>
+                <option value="20plus-trucks">More than 20 trucks</option>
+              </select>
+            </div>
+            <div class="form-grid-full">
+              <label class="label" for="equipmentType">Equipment type</label>
+              <input class="input" type="text" id="equipmentType" name="equipmentType" placeholder="Dry van, reefer, flatbed, box truck, power only..." />
+            </div>
+            <div class="form-grid-full">
+              <label class="label" for="hearAbout">How did you hear about PeakDispatch?</label>
+              <input class="input" type="text" id="hearAbout" name="hearAbout" placeholder="Referral, social media, YouTube, search..." />
+            </div>
+
+            <div class="form-grid-full">
+              <label class="label" for="meetingDate">Preferred meeting date</label>
+              <input class="input" type="date" id="meetingDate" name="meetingDate" />
+            </div>
+            <div class="form-grid-full">
+              <label class="label" for="timeSlot">Preferred time slot</label>
+              <select class="select" id="timeSlot" name="timeSlot">
+                <option value="">Select a time slot...</option>
+                <option value="Morning (09:00–11:00)">Morning (09:00–11:00)</option>
+                <option value="Midday (13:00–15:00)">Midday (13:00–15:00)</option>
+                <option value="Afternoon (16:00–18:00)">Afternoon (16:00–18:00)</option>
+                <option value="Evening (19:00–21:00)">Evening (19:00–21:00)</option>
+              </select>
+            </div>
+
+            <div class="form-grid-full">
+              <label class="label" for="notes">Anything else we should know?</label>
+              <textarea class="textarea" id="notes" name="notes" placeholder="Preferred lanes, average RPM, special requirements..."></textarea>
+            </div>
+          </div>
+
+          <div class="form-footer">
+            <div class="form-note">
+              By submitting this form you agree to be contacted by the PeakDispatch team about dispatch services for your fleet.
+            </div>
+            <button class="btn btn-primary" type="submit">Submit onboarding</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <footer class="footer">
+      © <script>document.write(new Date().getFullYear())</script> PeakDispatch. All rights reserved.
+    </footer>
+  </div>
+</body>
+</html>
