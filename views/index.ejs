@@ -92,30 +92,27 @@
   <h1>Live Dispatch Snapshot</h1>
   <p>Example view of how we monitor your fleet in real time.</p>
 
-  <div class="hero-card" id="liveCard">
+  <div class="hero-card">
     <div class="snapshot-row">
-      <span>Booked loads today</span>
-      <strong id="loadsToday">32</strong>
+      <span>Booked loads per day</span>
+      <strong><%= snapshot.loadsToday %></strong>
     </div>
     <div class="snapshot-row">
       <span>Best paying lane</span>
-      &nbsp&nbsp<strong id="bestLane">Chicago → Dallas</strong>
+      <strong><%= snapshot.bestLane %></strong>
     </div>
     <div class="snapshot-row">
       <span>Average RPM (reefers)</span>
-      <strong id="avgRpm">$3.12</strong>
+      <strong><%= snapshot.avgRpm %></strong>
     </div>
 
-    <!-- Animated road -->
     <div class="road-container">
       <div class="road-line"></div>
       <div class="truck"></div>
     </div>
   </div>
+</section>
 
-
-        </div>
-      </section>
 
       <section id="about" class="section dynamic-section" data-section="about">
         <div class="section-inner">
