@@ -124,3 +124,16 @@ document.addEventListener("DOMContentLoaded", () => {
   // на секои 12 часа
   setInterval(toggleDayNight, 43200000);
 });
+document.addEventListener('DOMContentLoaded', ()=>{
+  let isDay = false;
+  setInterval(()=>{
+    document.body.classList.toggle('day-mode', isDay);
+    isDay = !isDay;
+  }, 12*60*60*1000); // 12h
+});
+function calcROI(){
+  const t = parseInt(document.getElementById('trucks').value || "1",10);
+  // конзервативна пресметка: $1,200+/truck месечно
+  const res = (t * 1200).toLocaleString();
+  document.getElementById('roiResult').textContent = `Estimated monthly profit increase: $${res}+`;
+}
