@@ -55,67 +55,24 @@
     </div>
 
     <main>
-      <section class="hero">
-        <div class="hero-inner">
-          <div>
-            <div class="hero-label">
-              <span class="hero-label-dot"></span>
-              <span>Independent Dispatch • North America</span>
-            </div>
-            <h1 class="hero-title">
-              <span><%= content.heroTitle %></span>
-            </h1>
-            <p class="hero-subtitle"><%= content.heroSubtitle %></p>
+	<section class="hero hero--video">
+  <video class="hero-video" autoplay muted playsinline loop>
+    <source src="/videos/hero.mp4" type="video/mp4">
+  </video>
+  <div class="hero-overlay"></div>
 
-            <div class="hero-buttons">
-              <a href="/join" class="btn btn-primary"><%= content.heroPrimaryCta %></a>
-              <a href="#" data-section-link="services" class="btn btn-outline"><%= content.heroSecondaryCta %></a>
-            </div>
-
-            <div class="hero-metrics">
-              <div class="metric">
-                <span class="metric-value">24/7</span>
-                <span class="metric-label">Dedicated dispatch support</span>
-              </div>
-              <div class="metric">
-                <span class="metric-value">+18%</span>
-                <span class="metric-label">Average revenue per truck uplift*</span>
-              </div>
-              <div class="metric">
-                <span class="metric-value">3 min</span>
-                <span class="metric-label">Average response time</span>
-              </div>
-            </div>
-          </div>
-
-          <section class="hero-section">
-  <h1>Live Dispatch Snapshot</h1>
-  <p>View of how we monitor your fleet in real time.<BR>(per day)</p>
-
-  <div class="hero-card" id="liveCard">
-    <div class="snapshot-row">
-      <span>Booked loads that day</span>
-      <strong id="loadsToday">32</strong>
-    </div>
-    <div class="snapshot-row">
-      <span>Best paying lane</span>
-      &nbsp&nbsp<strong id="bestLane">Chicago → Dallas</strong>
-    </div>
-    <div class="snapshot-row">
-      <span>Average RPM (reefers)</span>
-      <strong id="avgRpm">$3.12</strong>
-    </div>
-
-    <!-- Animated road -->
-    <div class="road-container">
-      <div class="road-line"></div>
-      <div class="truck"></div>
+  <div class="hero-content" data-aos="fade-up">
+    <h1>Premium Dispatch for Carriers & Fleets</h1>
+    <p>Higher RPM. Lower downtime. Clear reporting.</p>
+    <div class="hero-cta">
+      <a href="/join" class="btn btn-primary">Get Free Strategy Call</a>
+      <a href="#services" class="btn btn-outline">See Services</a>
     </div>
   </div>
+</section>
 
 
-        </div>
-      </section>
+ 
 
       <section id="about" class="section dynamic-section" data-section="about">
         <div class="section-inner">
@@ -242,7 +199,63 @@
           </div>
         </div>
       </section>
+	           <section class="hero-section">
+  <h1>Live Dispatch Snapshot</h1>
+  <p>View of how we monitor your fleet in real time.<BR>(per day)</p>
 
+  <div class="hero-card" id="liveCard">
+    <div class="snapshot-row">
+      <span>Booked loads that day</span>
+      <strong id="loadsToday">32</strong>
+    </div>
+    <div class="snapshot-row">
+      <span>Best paying lane</span>
+      &nbsp&nbsp<strong id="bestLane">Chicago → Dallas</strong>
+    </div>
+    <div class="snapshot-row">
+      <span>Average RPM (reefers)</span>
+      <strong id="avgRpm">$3.12</strong>
+    </div>
+
+    <!-- Animated road -->
+    <div class="road-container">
+      <div class="road-line"></div>
+      <div class="truck"></div>
+    </div>
+  </div>
+
+
+        </div>
+      </section>
+	  <section id="who-we-serve" data-aos="fade-up">
+  <h2>Who We Serve</h2>
+  <div class="grid-3">
+    <article class="card">
+      <h3>Owner-Operators</h3>
+      <ul>
+        <li>Premium freight & rate negotiation</li>
+        <li>Back-office paperwork done for you</li>
+        <li>Weekly RPM performance reports</li>
+      </ul>
+    </article>
+    <article class="card">
+      <h3>Small Fleets (2–10)</h3>
+      <ul>
+        <li>Centralized planning & preferred lanes</li>
+        <li>Dedicated dispatcher coverage</li>
+        <li>Broker & shipper relationship management</li>
+      </ul>
+    </article>
+    <article class="card">
+      <h3>Growing Fleets (10+)</h3>
+      <ul>
+        <li>Executive recaps & KPI dashboards</li>
+        <li>Multi-truck utilization & driver scheduling</li>
+        <li>Direct shipper opportunities</li>
+      </ul>
+    </article>
+  </div>
+</section>
       <section id="contact" class="section dynamic-section" data-section="contact">
         <div class="section-inner">
           <div class="cta-banner">
@@ -262,6 +275,10 @@
           </div>
         </div>
       </section>
+
+
+	  <a href="/join" class="cta-float">Free Strategy Call</a>
+
     </main>
 
     <footer class="footer">
