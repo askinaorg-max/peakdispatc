@@ -206,3 +206,48 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+document.addEventListener("DOMContentLoaded", () => {
+  const phoneModal = document.getElementById("phoneModal");
+  const closeBtn = document.getElementById("phoneClose");
+  const submitBtn = document.getElementById("phoneSubmit");
+  const continueLink = document.getElementById("continueSite");
+  const phoneInput = document.getElementById("phoneInput");
+
+  // OPEN ON PAGE LOAD
+  setTimeout(() => {
+    phoneModal.classList.add("show");
+  }, 600);
+
+  // CLOSE MODAL
+  function closePhoneModal() {
+    phoneModal.classList.remove("show");
+  }
+
+  closeBtn.addEventListener("click", closePhoneModal);
+  continueLink.addEventListener("click", closePhoneModal);
+
+  // SUBMIT PHONE NUMBER
+  submitBtn.addEventListener("click", async () => {
+    const number = phoneInput.value.trim();
+
+    if (!number) {
+      alert("Please enter a valid phone number.");
+      return;
+    }
+
+    // SEND PHONE NUMBER TO BACKEND
+    try {
+      await fetch("/api/phone", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ number })
+      });
+
+      alert("Thank you! We will contact you shortly.");
+      closePhoneModal();
+
+    } catch (e) {
+      alert("Error sending number. Please try again.");
+    }
+  });
+});

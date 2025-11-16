@@ -1277,3 +1277,88 @@ scrollbar-color: #00baff rgba(255,255,255,0.1);
   opacity: 0.9;
   font-size: 15px;
 }
+/* ===== PHONE POPUP OVERLAY ===== */
+.phone-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.3s ease;
+}
+/* Force all popup text to black */
+.phone-modal-content,
+.phone-modal-content * {
+  color: #000 !important;
+}
+
+.phone-modal.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ===== POPUP BOX ===== */
+.phone-modal-content {
+  position: relative;
+  width: 90%;
+  max-width: 420px;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+  text-align: center;
+  overflow: hidden;
+}
+
+
+/* Logo watermark background */
+.phone-modal-logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 260px;
+  height: 260px;
+  transform: translate(-50%, -50%);
+  background: url('/images/peakdispatch-logo.png') center/contain no-repeat;
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+/* Close button */
+.phone-close {
+  position: absolute;
+  right: 14px;
+  top: 10px;
+  font-size: 26px;
+  cursor: pointer;
+  color: #444;
+}
+
+.phone-close:hover {
+  color: #000;
+}
+
+/* Input */
+#phoneInput {
+  width: 100%;
+  padding: 12px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+/* Continue link */
+.continue-link {
+  display: block;
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: #666;
+  text-decoration: underline;
+  cursor: pointer;
+}

@@ -280,6 +280,30 @@ app.post('/admin/bookings/:id/status', requireAdmin, (req, res) => {
   res.redirect('/admin');
 });
 
+app.post("/api/phone", async (req, res) => {
+  const number = req.body.number;
+
+  const nodemailer = require("nodemailer");
+
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "websolution.mn@gmail.com",
+      pass: "dtgx uirg ghov lukh"
+    }
+  });
+
+  await transporter.sendMail({
+    from: '"PeakDispatch Lead"',
+    to: "vlavcheto@gmail.com",           // каде да стигне бројот
+    subject: "New Phone Lead",
+    text: `Phone number: ${number}`
+  });
+
+  res.json({ ok: true });
+});
+
+
 app.listen(PORT, () => {
   console.log(`PeakDispatch site running on http://localhost:${PORT}`);
 });
