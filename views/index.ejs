@@ -26,8 +26,8 @@
           <a href="#" data-section-link="contact">Contact</a>
         </nav>
         <div class="nav-cta">
-          <a href="/join" class="btn btn-outline nav-cta-desktop">Join as Carrier</a>
-          <a href="/join" class="btn btn-primary nav-cta-desktop">Get Started</a>
+          <a href="/join" data-open="join"class="btn btn-outline nav-cta-desktop">Join as Carrier</a>
+          <a href="/join" data-open="join"class="btn btn-primary nav-cta-desktop">Get Started</a>
           <button class="nav-toggle" type="button" id="navToggle" aria-label="Toggle navigation">
             <span class="nav-toggle-label">Menu</span>
           </button>
@@ -39,7 +39,7 @@
           <a href="#" data-section-link="services" class="nav-mobile-link">Services</a>
           <a href="#" data-section-link="how-it-works" class="nav-mobile-link">How it works</a>
           <a href="#" data-section-link="contact" class="nav-mobile-link">Contact</a>
-          <a href="/join" class="btn btn-primary nav-mobile-cta">Join as Carrier</a>
+          <a href="/join" data-open="join"class="btn btn-primary nav-mobile-cta">Join as Carrier</a>
         </div>
       </div>
     </header>
@@ -56,7 +56,36 @@
 
     <main>
 	<section class="hero hero--video">
+	<div class="topDaily">
+<h3>Top Daily <span id="dailyDate"></span></h3>
+
+   <div class="category">
+      <h4>Van</h4>
+      <p><b>Name:</b> John Peterson</p>
+      <p><b>Miles:</b> 742 mi</p>
+      <p><b>RPM:</b> 2.13</p>
+      <p><b>Route:</b> Chicago, IL → Dallas, TX</p>
+   </div>
+
+   <div class="category">
+      <h4>Reefer</h4>
+      <p><b>Name:</b> Victor Sanchez</p>
+      <p><b>Miles:</b> 980 mi</p>
+      <p><b>RPM:</b> 2.65</p>
+      <p><b>Route:</b> Miami, FL → Cincinnati, OH</p>
+   </div>
+
+   <div class="category">
+      <h4>FlatBed</h4>
+      <p><b>Name:</b> Anthony Reed</p>
+      <p><b>Miles:</b> 620 mi</p>
+      <p><b>RPM:</b> 3.45</p>
+      <p><b>Route:</b> Denver, CO → Phoenix, AZ</p>
+   </div>
+</div>
   <video class="hero-video" autoplay muted playsinline loop>
+  
+
     <source src="/videos/hero.mp4" type="video/mp4">
   </video>
   <div class="hero-overlay"></div>
@@ -65,8 +94,8 @@
     <h1>Premium Dispatch for Carriers & Fleets</h1>
     <p>Higher RPM. Lower downtime. Clear reporting.</p>
     <div class="hero-cta">
-      <a href="/join" class="btn btn-primary">Get Free Strategy Call</a>
-      <a href="#services" class="btn btn-outline">See Services</a>
+      <a href="/join" data-open="join"class="btn btn-primary">Get Free Strategy Call</a>
+<a href="/#services" class="btn btn-outline no-popup">See Services</a>
     </div>
   </div>
 </section>
@@ -199,33 +228,7 @@
           </div>
         </div>
       </section>
-	           <section class="hero-section">
-  <h1>Live Dispatch Snapshot</h1>
-  <p>View of how we monitor your fleet in real time.<BR>(per day)</p>
-
-  <div class="hero-card" id="liveCard">
-    <div class="snapshot-row">
-      <span>Booked loads that day</span>
-      <strong id="loadsToday">32</strong>
-    </div>
-    <div class="snapshot-row">
-      <span>Best paying lane</span>
-      &nbsp&nbsp<strong id="bestLane">Chicago → Dallas</strong>
-    </div>
-    <div class="snapshot-row">
-      <span>Average RPM (reefers)</span>
-      <strong id="avgRpm">$3.12</strong>
-    </div>
-
-    <!-- Animated road -->
-    <div class="road-container">
-      <div class="road-line"></div>
-      <div class="truck"></div>
-    </div>
-  </div>
-
-
-        </div>
+	          
       </section>
 	  <section id="who-we-serve" data-aos="fade-up">
   <h2>Who We Serve</h2>
@@ -269,15 +272,15 @@
               </p>
             </div>
             <div class="cta-actions">
-              <a href="/join" class="btn btn-primary">Request free strategy call</a>
-              <a href="/join" class="btn btn-outline">Join as Carrier</a>
+              <a href="/join" data-open="join"class="btn btn-primary">Request free strategy call</a>
+              <a href="/join" data-open="join"class="btn btn-outline">Join as Carrier</a>
             </div>
           </div>
         </div>
       </section>
 
 
-	  <a href="/join" class="cta-float">Free Strategy Call</a>
+	  <a href="/join" data-open="join"class="cta-float">Free Strategy Call</a>
 
     </main>
 
@@ -286,5 +289,36 @@
     </footer>
   </div>
   <script src="/js/main.js"></script>
+
+<!-- JOIN AS DRIVER POPUP -->
+<div id="joinModal" class="join-modal">
+  <div class="join-modal-content">
+    <span class="join-close" id="joinClose">&times;</span>
+    <h2>Join as Driver</h2>
+
+    <div class="join-options">
+
+      <div class="join-box">
+        <h3>Company</h3>
+        <p>Waiting for rates.</p>
+        <button class="btn btn-primary join-apply" data-type="company">Apply</button>
+      </div>
+
+      <div class="join-box">
+        <h3>List to Purchase</h3>
+        <p>Negotiating..</p>
+        <button class="btn btn-primary join-apply" data-type="purchase">Apply</button>
+      </div>
+
+      <div class="join-box">
+        <h3>Owner Operator</h3>
+        <p>Sign up to 10,000 USD Bonus</p>
+        <button class="btn btn-primary join-apply" data-type="owner">Apply</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

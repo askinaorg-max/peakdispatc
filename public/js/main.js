@@ -1,3 +1,6 @@
+// =====================
+// NAVIGATION LOGIC
+// =====================
 document.addEventListener('DOMContentLoaded', () => {
   const loader = document.getElementById('section-loader');
   const sections = document.querySelectorAll('.dynamic-section');
@@ -23,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function showSection(target) {
     if (!target) return;
-    const delay = 100 + Math.random() * 900; // 0.1–1 секунда
+    const delay = 100 + Math.random() * 900;
 
     if (loader) {
       loader.classList.remove('hidden');
@@ -65,10 +68,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Default секција
   showSection('about');
 });
-// ====== Live Dispatch Animation and Data Logic ======
+
+// =====================
+// LIVE DISPATCH DATA
+// =====================
 document.addEventListener("DOMContentLoaded", () => {
   const loadsEl = document.getElementById("loadsToday");
   const laneEl = document.getElementById("bestLane");
@@ -108,32 +113,96 @@ document.addEventListener("DOMContentLoaded", () => {
     rpmEl.textContent = `$${rpm}`;
   }
 
-  // иницијално
   updateSnapshot();
-
-  // ажурирање на секои 18 часа (64800000 ms)
   setInterval(updateSnapshot, 64800000);
 
-  // Ден/ноќ режим на секои 12 часа
   let isDay = false;
   function toggleDayNight() {
     document.body.classList.toggle("day-mode", isDay);
     isDay = !isDay;
   }
 
-  // на секои 12 часа
   setInterval(toggleDayNight, 43200000);
 });
-document.addEventListener('DOMContentLoaded', ()=>{
-  let isDay = false;
-  setInterval(()=>{
-    document.body.classList.toggle('day-mode', isDay);
-    isDay = !isDay;
-  }, 12*60*60*1000); // 12h
-});
-function calcROI(){
-  const t = parseInt(document.getElementById('trucks').value || "1",10);
-  // конзервативна пресметка: $1,200+/truck месечно
-  const res = (t * 1200).toLocaleString();
-  document.getElementById('roiResult').textContent = `Estimated monthly profit increase: $${res}+`;
+
+// =====================
+// DAILY DRIVER DATA
+// =====================
+const dailyData = {
+  van: [
+    { name: "John Peterson", miles: "742", rpm: "2.13", route: "Chicago, IL → Dallas, TX" },
+    { name: "Michael Torres", miles: "815", rpm: "2.25", route: "Atlanta, GA → Columbus, OH" },
+    { name: "Bradley Cooper", miles: "690", rpm: "2.05", route: "Kansas City, MO → Denver, CO" }
+  ],
+  reefer: [
+    { name: "Victor Sanchez", miles: "980", rpm: "2.65", route: "Miami, FL → Cincinnati, OH" },
+    { name: "Leonard White", miles: "1024", rpm: "2.72", route: "Houston, TX → Nashville, TN" },
+    { name: "Jorge Martinez", miles: "890", rpm: "2.51", route: "Tampa, FL → Charlotte, NC" }
+  ],
+  flatbed: [
+    { name: "Anthony Reed", miles: "620", rpm: "3.45", route: "Denver, CO → Phoenix, AZ" },
+    { name: "Samuel Hayes", miles: "710", rpm: "3.22", route: "Boise, ID → Reno, NV" },
+    { name: "Robert King", miles: "655", rpm: "3.18", route: "Omaha, NE → Sioux Falls, SD" }
+  ]
+};
+
+function formatDate(date) {
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
 }
+
+document.getElementById("dailyDate").textContent = "— " + formatDate(new Date());
+
+const dayIndex = Math.floor(Date.now() / (24 * 60 * 60 * 1000)) % 3;
+
+const categories = document.querySelectorAll(".category");
+
+categories[0].querySelector("p:nth-child(2)").innerHTML = `<b>Name:</b> ${dailyData.van[dayIndex].name}`;
+categories[0].querySelector("p:nth-child(3)").innerHTML = `<b>Miles:</b> ${dailyData.van[dayIndex].miles} mi`;
+categories[0].querySelector("p:nth-child(4)").innerHTML = `<b>RPM:</b> ${dailyData.van[dayIndex].rpm}`;
+categories[0].querySelector("p:nth-child(5)").innerHTML = `<b>Route:</b> ${dailyData.van[dayIndex].route}`;
+
+categories[1].querySelector("p:nth-child(2)").innerHTML = `<b>Name:</b> ${dailyData.reefer[dayIndex].name}`;
+categories[1].querySelector("p:nth-child(3)").innerHTML = `<b>Miles:</b> ${dailyData.reefer[dayIndex].miles} mi`;
+categories[1].querySelector("p:nth-child(4)").innerHTML = `<b>RPM:</b> ${dailyData.reefer[dayIndex].rpm}`;
+categories[1].querySelector("p:nth-child(5)").innerHTML = `<b>Route:</b> ${dailyData.reefer[dayIndex].route}`;
+
+categories[2].querySelector("p:nth-child(2)").innerHTML = `<b>Name:</b> ${dailyData.flatbed[dayIndex].name}`;
+categories[2].querySelector("p:nth-child(3)").innerHTML = `<b>Miles:</b> ${dailyData.flatbed[dayIndex].miles} mi`;
+categories[2].querySelector("p:nth-child(4)").innerHTML = `<b>RPM:</b> ${dailyData.flatbed[dayIndex].rpm}`;
+categories[2].querySelector("p:nth-child(5)").innerHTML = `<b>Route:</b> ${dailyData.flatbed[dayIndex].route}`;
+
+// =====================
+// POPUP LOGIC (FIXED)
+// =====================
+document.addEventListener("DOMContentLoaded", () => {
+  const modal = document.getElementById("joinModal");
+  const closeBtn = document.getElementById("joinClose");
+
+  // ALL BUTTONS WITH data-open="join" except "Get Free Strategy Call"
+  document.querySelectorAll("[data-open='join']").forEach(btn => {
+    if (btn.textContent.trim() !== "Get Free Strategy Call") {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        modal.classList.add("show");
+      });
+    }
+  });
+
+  closeBtn.addEventListener("click", () => {
+    modal.classList.remove("show");
+  });
+
+  window.addEventListener("click", (e) => {
+    if (e.target === modal) modal.classList.remove("show");
+  });
+
+  document.querySelectorAll(".join-apply").forEach(btn => {
+    btn.addEventListener("click", () => {
+      window.location.href = "/join";
+    });
+  });
+});
