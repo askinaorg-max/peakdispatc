@@ -1444,3 +1444,17 @@ scrollbar-color: #00baff rgba(255,255,255,0.1);
   background: #083978;
   color: #fff;
 }
+/* Make all popup close buttons (X) black /
+.phone-close,
+.join-close,
+.daily-close {
+  color: #000 !important;
+}
+
+/ Optional: darker on hover */
+.phone-close:hover,
+.join-close:hover,
+.daily-close:hover {
+  color: #000 !important;
+  opacity: 0.8;
+}
