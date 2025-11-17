@@ -1362,3 +1362,85 @@ scrollbar-color: #00baff rgba(255,255,255,0.1);
   text-decoration: underline;
   cursor: pointer;
 }
+/* ===== DAILY MODAL ===== */
+.daily-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 99990;
+}
+
+.daily-modal.show {
+  display: flex;
+}
+
+.daily-modal-content {
+  background: #ffffff;
+  color: #000;
+  width: 90%;
+  max-width: 480px;
+  border-radius: 14px;
+  padding: 1.8rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  position: relative;
+}
+
+.daily-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 26px;
+  cursor: pointer;
+}
+
+.daily-list {
+  margin-top: 1rem;
+  max-height: 320px;
+  overflow-y: auto;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.daily-list-item {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.daily-list-item:last-child {
+  border-bottom: none;
+}
+
+.daily-list-item strong {
+  display: inline-block;
+  min-width: 90px;
+}
+.daily-link {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 0.82rem;
+  color: #0070c9;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.daily-link:hover {
+  color: #004a85;
+}
+/* FORCE popup titles to be black */
+.daily-modal-content h3,
+.phone-modal-content h2,
+.join-modal-content h2 {
+  color: #000 !important;
+}
+#dailyViewPay {
+  border: 2px solid #083978;
+  color: #083978;
+  background: #fff;
+}
+
+#dailyViewPay:hover {
+  background: #083978;
+  color: #fff;
+}

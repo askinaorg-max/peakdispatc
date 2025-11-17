@@ -237,17 +237,144 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // SEND PHONE NUMBER TO BACKEND
     try {
-      await fetch("/api/phone", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ number })
-      });
+  await fetch("/api/phone", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ number })
+  });
 
-      alert("Thank you! We will contact you shortly.");
-      closePhoneModal();
+  alert("Fill the full form");
 
-    } catch (e) {
-      alert("Error sending number. Please try again.");
-    }
+  // Close popup
+  closePhoneModal();
+
+  // Redirect to form page
+  window.location.href = "/join";
+
+} catch (e) {
+  alert("Will be redirect to fill a full form");
+}
+
   });
 });
+// =====================
+// LAST 15 DAYS DATA FOR POPUP
+// =====================
+const last15DaysData = {
+  van: [
+    { date: "2025-01-15", driver: "John Peterson", miles: 742, rpm: 2.13 },
+    { date: "2025-01-14", driver: "Michael Torres", miles: 815, rpm: 2.25 },
+    { date: "2025-01-13", driver: "Bradley Cooper", miles: 690, rpm: 2.05 },
+    { date: "2025-01-12", driver: "Gary Wilson", miles: 701, rpm: 2.18 },
+    { date: "2025-01-11", driver: "Tom Harris", miles: 663, rpm: 2.09 }
+  ],
+  reefer: [
+    { date: "2025-01-15", driver: "Victor Sanchez", miles: 980, rpm: 2.65 },
+    { date: "2025-01-14", driver: "Leonard White", miles: 1024, rpm: 2.72 },
+    { date: "2025-01-13", driver: "Jorge Martinez", miles: 890, rpm: 2.51 },
+    { date: "2025-01-12", driver: "Carlos Ramirez", miles: 910, rpm: 2.59 },
+    { date: "2025-01-11", driver: "James Howard", miles: 867, rpm: 2.47 }
+  ],
+  flatbed: [
+    { date: "2025-01-15", driver: "Anthony Reed", miles: 620, rpm: 3.45 },
+    { date: "2025-01-14", driver: "Samuel Hayes", miles: 710, rpm: 3.22 },
+    { date: "2025-01-13", driver: "Robert King", miles: 655, rpm: 3.18 },
+    { date: "2025-01-12", driver: "Peter Collins", miles: 700, rpm: 3.30 },
+    { date: "2025-01-11", driver: "Mark Johnson", miles: 640, rpm: 3.12 }
+  ]
+};
+// =====================
+// DAILY MODAL LOGIC
+// =====================
+document.addEventListener("DOMContentLoaded", () => {
+  const dailyModal = document.getElementById("dailyModal");
+  const dailyClose = document.getElementById("dailyClose");
+  const dailyTitle = document.getElementById("dailyModalTitle");
+  const dailyList = document.getElementById("dailyModalList");
+  const dailyApply = document.getElementById("dailyApply");
+  const dailyViewPay = document.getElementById("dailyViewPay");
+  let currentType = null;
+
+  const titles = {
+    van: "Van — last 15 days",
+    reefer: "Reefer — last 15 days",
+    flatbed: "Flatbed — last 15 days"
+  };
+
+  document.querySelectorAll(".daily-category").forEach(card => {
+    card.addEventListener("click", () => {
+      const type = card.getAttribute("data-type");
+      currentType = type;
+
+      const data = last15DaysData[type] || [];
+      let html = "";
+
+      data.forEach(row => {
+        html += `
+          <div class="daily-list-item">
+            <strong>${row.date}</strong>
+            <div>Driver: ${row.driver}</div>
+            <div>Miles: ${row.miles} mi</div>
+            <div>Rate: $${row.rpm}/mi</div>
+          </div>`;
+      });
+
+      dailyTitle.textContent = titles[type];
+      dailyList.innerHTML = html;
+      dailyModal.classList.add("show");
+    });
+  });
+
+  dailyClose.addEventListener("click", () => dailyModal.classList.remove("show"));
+
+  window.addEventListener("click", e => {
+    if (e.target === dailyModal) dailyModal.classList.remove("show");
+  });
+
+  dailyApply.addEventListener("click", () => {
+    window.location.href = "/join";
+  });
+
+  // ✅ FIX: View driver check pay PDF open
+  dailyViewPay.addEventListener("click", () => {
+    if (!currentType) return;
+
+    let pdfPath = `/documents/${currentType}.pdf`;
+    window.open(pdfPath, "_blank");
+  });
+});
+
+
+  // Apply → форма за податоци
+  dailyApply.addEventListener("click", () => {
+    window.location.href = "/join";
+  });
+
+// CLICK ON "see more details..."
+document.querySelectorAll(".daily-link").forEach(link => {
+  link.addEventListener("click", () => {
+    const type = link.getAttribute("data-type");
+    const data = last15DaysData[type] || [];
+
+    dailyTitle.textContent = titles[type] || "Last 15 days";
+
+    let html = "";
+
+    data.forEach(row => {
+      html += `
+        <div class="daily-list-item">
+          <strong>${row.date}</strong>
+          <div>Driver: ${row.driver}</div>
+          <div>Miles: ${row.miles} mi</div>
+          <div>Rate: $${row.rpm}/mi</div>
+        </div>
+      `;
+    });
+
+    if (!html) html = "<p>No data for the last 15 days.</p>";
+
+    dailyList.innerHTML = html;
+    dailyModal.classList.add("show");
+  });
+});
+

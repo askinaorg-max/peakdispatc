@@ -26,7 +26,7 @@
           <a href="#" data-section-link="contact">Contact</a>
         </nav>
         <div class="nav-cta">
-          <a href="/join" data-open="join"class="btn btn-outline nav-cta-desktop">Join as Carrier</a>
+          <a href="/join" data-open="join"class="btn btn-outline nav-cta-desktop">Join as Driver</a>
           <a href="/join" data-open="join"class="btn btn-primary nav-cta-desktop">Get Started</a>
           <button class="nav-toggle" type="button" id="navToggle" aria-label="Toggle navigation">
             <span class="nav-toggle-label">Menu</span>
@@ -39,7 +39,7 @@
           <a href="#" data-section-link="services" class="nav-mobile-link">Services</a>
           <a href="#" data-section-link="how-it-works" class="nav-mobile-link">How it works</a>
           <a href="#" data-section-link="contact" class="nav-mobile-link">Contact</a>
-          <a href="/join" data-open="join"class="btn btn-primary nav-mobile-cta">Join as Carrier</a>
+          <a href="/join" data-open="join"class="btn btn-primary nav-mobile-cta">Join as Driver</a>
         </div>
       </div>
     </header>
@@ -59,29 +59,35 @@
 	<div class="topDaily">
 <h3>Top Daily <BR><span id="dailyDate"></span></h3>
 
-   <div class="category">
-      <h4>Van</h4>
-      <p><b>Name:</b> John Peterson</p>
-      <p><b>Miles:</b> 742 mi</p>
-      <p><b>RPM:</b> 2.13</p>
-      <p><b>Route:</b> Chicago, IL → Dallas, TX</p>
-   </div>
+   <div class="category daily-category" data-type="van">
+  <h4>Van</h4>
+  <p><b>Name:</b> John Peterson</p>
+  <p><b>Miles:</b> 742 mi</p>
+  <p><b>RPM:</b> 2.13</p>
+  <p><b>Route:</b> Chicago, IL → Dallas, TX</p>
+    <a class="daily-link" data-type="van">see more details...</a>
+</div>
 
-   <div class="category">
-      <h4>Reefer</h4>
-      <p><b>Name:</b> Victor Sanchez</p>
-      <p><b>Miles:</b> 980 mi</p>
-      <p><b>RPM:</b> 2.65</p>
-      <p><b>Route:</b> Miami, FL → Cincinnati, OH</p>
-   </div>
+<div class="category daily-category" data-type="reefer">
+  <h4>Reefer</h4>
+  <p><b>Name:</b> Victor Sanchez</p>
+  <p><b>Miles:</b> 980 mi</p>
+  <p><b>RPM:</b> 2.65</p>
+  <p><b>Route:</b> Miami, FL → Cincinnati, OH</p>
+  <a class="daily-link" data-type="reefer">see more details...</a>
 
-   <div class="category">
-      <h4>FlatBed</h4>
-      <p><b>Name:</b> Anthony Reed</p>
-      <p><b>Miles:</b> 620 mi</p>
-      <p><b>RPM:</b> 3.45</p>
-      <p><b>Route:</b> Denver, CO → Phoenix, AZ</p>
-   </div>
+</div>
+
+<div class="category daily-category" data-type="flatbed">
+  <h4>FlatBed</h4>
+  <p><b>Name:</b> Anthony Reed</p>
+  <p><b>Miles:</b> 620 mi</p>
+  <p><b>RPM:</b> 3.45</p>
+  <p><b>Route:</b> Denver, CO → Phoenix, AZ</p>
+  <a class="daily-link" data-type="flatbed">see more details...</a>
+
+</div>
+
 </div>
   <video class="hero-video" autoplay muted playsinline loop>
   
@@ -340,6 +346,26 @@
     </button>
 
     <a id="continueSite" class="continue-link">continue to peakdispatch.net</a>
+  </div>
+</div>
+<!-- DAILY DETAILS POPUP -->
+<div id="dailyModal" class="daily-modal">
+  <div class="daily-modal-content">
+    <span class="daily-close" id="dailyClose">&times;</span>
+
+    <h3 id="dailyModalTitle">Last 15 days</h3>
+
+    <div id="dailyModalList" class="daily-list">
+      <!-- Тука со JS ќе се вметнат податоци -->
+    </div>
+
+    <button id="dailyApply" class="btn btn-primary" style="width:100%; margin-top:1rem;">
+      Apply
+    </button>
+	<button id="dailyViewPay" class="btn btn-outline" style="width:100%; margin-top:0.7rem;">
+  View driver check pay
+</button>
+
   </div>
 </div>
 
