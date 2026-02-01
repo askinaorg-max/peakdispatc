@@ -1722,3 +1722,80 @@ scrollbar-color: #00baff rgba(255,255,255,0.1);
     bottom: 80px; /* да не се судри со Free Strategy Call */
   }
 }
+/* --- Call buttons (green / red) --- */
+.btn-call-green{
+  background:#16a34a !important;
+  border:1px solid #0f7a37 !important;
+  color:#fff !important;
+  font-weight:800;
+  letter-spacing:0.2px;
+}
+.btn-call-green:hover{ filter:brightness(1.05); transform:translateY(-1px); }
+.btn-call-green:active{ transform:translateY(0); }
+
+.btn-hang-red{
+  background:#dc2626 !important;
+  border:1px solid #b91c1c !important;
+  color:#fff !important;
+  font-weight:800;
+  letter-spacing:0.2px;
+}
+.btn-hang-red:hover{ filter:brightness(1.05); transform:translateY(-1px); }
+.btn-hang-red:active{ transform:translateY(0); }
+
+.btn-hang-red:disabled,
+.btn-call-green:disabled{
+  opacity:0.55;
+  cursor:not-allowed;
+  transform:none;
+}
+
+/* --- Admin incoming call popup (uncloseable) --- */
+.call-popup{
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 999999;
+  width: min(420px, calc(100vw - 36px));
+  background: rgba(10, 14, 20, 0.92);
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 16px;
+  box-shadow: 0 18px 55px rgba(0,0,0,0.45);
+  padding: 14px 14px;
+  color: #fff;
+}
+
+.call-popup.hidden{ display:none; }
+
+.call-popup .call-popup-title{
+  font-weight: 900;
+  font-size: 1rem;
+  margin: 0 0 6px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.call-popup .call-popup-sub{
+  opacity:0.9;
+  font-size:0.9rem;
+  margin:0 0 10px;
+}
+
+.call-popup .call-popup-actions{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+.call-popup.is-shaking{
+  animation: callShake 0.2s infinite;
+}
+
+@keyframes callShake {
+  0% { transform: translate(0,0) rotate(0deg); }
+  25% { transform: translate(2px,-1px) rotate(0.2deg); }
+  50% { transform: translate(-2px,1px) rotate(-0.2deg); }
+  75% { transform: translate(2px,1px) rotate(0.2deg); }
+  100% { transform: translate(0,0) rotate(0deg); }
+}
