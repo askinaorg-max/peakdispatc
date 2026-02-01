@@ -19,6 +19,9 @@
   let callTimeoutId = null;
   const CALL_TIMEOUT_MS = 3 * 60 * 1000;
 
+  // --- ICE buffering (FIX for "remote description was null") ---
+  const pendingIce = [];
+
   function setStatus(msg) {
     if (statusEl) statusEl.textContent = msg || '';
   }
@@ -32,12 +35,13 @@
     if (localStream) return localStream;
 
     localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    localVideo.srcObject = localStream;
+    if (localVideo) localVideo.srcObject = localStream;
     return localStream;
   }
 
   function ensurePC() {
     if (pc) return pc;
+
     pc = new RTCPeerConnection({ iceServers });
 
     pc.onicecandidate = (e) => {
@@ -47,7 +51,31 @@
     };
 
     pc.ontrack = (e) => {
-      remoteVideo.srcObject = e.streams[0];
+      // Some browsers deliver streams, some deliver individual tracks
+      if (e.streams && e.streams[0]) {
+        remoteVideo.srcObject = e.streams[0];
+      } else if (remoteVideo) {
+        const ms = remoteVideo.srcObject || new MediaStream();
+        ms.addTrack(e.track);
+        remoteVideo.srcObject = ms;
+      }
+
+      // Mark connected when we start receiving media
+      connected = true;
+      if (callTimeoutId) { clearTimeout(callTimeoutId); callTimeoutId = null; }
+      setStatus('Connected.');
+    };
+
+    pc.onconnectionstatechange = () => {
+      const st = pc.connectionState;
+      if (st === 'failed' || st === 'disconnected' || st === 'closed') {
+        // do not force close instantly on 'disconnected' (mobile can recover),
+        // but if it fails, clean up.
+        if (st === 'failed') {
+          setStatus('Connection failed. Try again.');
+          cleanup();
+        }
+      }
     };
 
     return pc;
@@ -56,7 +84,28 @@
   async function attachTracks() {
     const stream = await initMedia();
     const peer = ensurePC();
-    stream.getTracks().forEach(track => peer.addTrack(track, stream));
+
+    // Prevent adding tracks multiple times
+    const senders = peer.getSenders ? peer.getSenders() : [];
+    const alreadyHas = (track) => senders.some(s => s.track && s.track.id === track.id);
+
+    stream.getTracks().forEach(track => {
+      if (!alreadyHas(track)) peer.addTrack(track, stream);
+    });
+  }
+
+  async function flushPendingIce(peer) {
+    // Add buffered ICE candidates after remoteDescription exists
+    if (!peer || !peer.remoteDescription) return;
+
+    while (pendingIce.length) {
+      const c = pendingIce.shift();
+      try {
+        await peer.addIceCandidate(new RTCIceCandidate(c));
+      } catch (e) {
+        console.warn('flush addIceCandidate failed:', e);
+      }
+    }
   }
 
   function cleanup() {
@@ -64,6 +113,9 @@
       if (pc) pc.close();
     } catch {}
     pc = null;
+
+    pendingIce.length = 0;
+    connected = false;
 
     if (remoteVideo) remoteVideo.srcObject = null;
 
@@ -92,7 +144,8 @@
     roomId = id;
     await joinRoomAs('caller');
     setStatus('Ringing admin…');
-    // Start unanswered timer (3 minutes)
+
+    // Start unanswered timer (3 minutes) for caller only
     if (!isAdmin) {
       if (callTimeoutId) clearTimeout(callTimeoutId);
       callTimeoutId = setTimeout(() => {
@@ -107,7 +160,9 @@
 
   socket.on('peer-joined', async () => {
     if (isAdmin) return;
+
     if (callTimeoutId) { clearTimeout(callTimeoutId); callTimeoutId = null; }
+
     // Caller makes offer when admin joins
     setStatus('Connecting…');
 
@@ -127,6 +182,8 @@
         await attachTracks();
 
         await peer.setRemoteDescription(new RTCSessionDescription(message.sdp));
+        await flushPendingIce(peer);
+
         const answer = await peer.createAnswer();
         await peer.setLocalDescription(answer);
         socket.emit('signal', { roomId, message: { type: 'answer', sdp: answer } });
@@ -134,13 +191,24 @@
 
       if (message.type === 'answer' && !isAdmin) {
         await peer.setRemoteDescription(new RTCSessionDescription(message.sdp));
+        await flushPendingIce(peer);
+
         connected = true;
         if (callTimeoutId) { clearTimeout(callTimeoutId); callTimeoutId = null; }
         setStatus('Connected.');
       }
 
       if (message.type === 'candidate') {
-        await peer.addIceCandidate(new RTCIceCandidate(message.candidate));
+        // Candidate can arrive before remoteDescription -> buffer
+        const cand = message.candidate;
+        if (!cand) return;
+
+        if (!peer.remoteDescription) {
+          pendingIce.push(cand);
+          return;
+        }
+
+        await peer.addIceCandidate(new RTCIceCandidate(cand));
       }
     } catch (e) {
       console.error(e);
@@ -167,7 +235,6 @@
     hangupBtn && (hangupBtn.disabled = false);
     setStatus('Ready to accept incoming call…');
 
-    // ensure we have a room
     if (!roomId) {
       setStatus('Missing room id.');
     } else {
@@ -176,7 +243,6 @@
       attachTracks().catch(() => setStatus('Please allow camera/mic.'));
     }
   }
-
 
   // --- Callback modal helpers ---
   const callbackModal = document.getElementById('callbackModal');
