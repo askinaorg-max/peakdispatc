@@ -441,5 +441,18 @@
   </script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="/js/admin.js"></script>
+
+<!-- Incoming call popup (uncloseable) -->
+<div id="incomingCallPopup" class="call-popup hidden" aria-live="assertive">
+  <div class="call-popup-title">📞 Incomming Call</div>
+  <div class="call-popup-sub" id="incomingCallPopupText">Someone is calling you ...</div>
+  <div class="call-popup-actions">
+    <a id="incomingCallPopupAccept" class="btn btn-call-green" href="#" target="_blank" rel="noopener">
+      📞 Accept Call
+    </a>
+    <span style="opacity:0.85;font-size:0.85rem;">(попапот не се гаси)</span>
+  </div>
+</div>
+
 </body>
 </html>
