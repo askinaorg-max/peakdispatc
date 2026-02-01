@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function showSection(target) {
     if (!target) return;
-    const delay = 100 + Math.random() * 900;
+    const delay = 220;
 
     if (loader) {
       loader.classList.remove('hidden');
@@ -66,6 +66,20 @@ document.addEventListener('DOMContentLoaded', () => {
     navToggle.addEventListener('click', () => {
       navMobile.classList.toggle('open');
     });
+  }
+
+
+  // Section content reveal animations
+  const revealEls = document.querySelectorAll('.pd-reveal');
+  if ('IntersectionObserver' in window && revealEls.length) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) e.target.classList.add('in-view');
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach((el) => io.observe(el));
+  } else {
+    revealEls.forEach((el) => el.classList.add('in-view'));
   }
 
   showSection('about');
@@ -237,144 +251,220 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // SEND PHONE NUMBER TO BACKEND
     try {
-  await fetch("/api/phone", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ number })
-  });
-
-  alert("Fill the full form");
-
-  // Close popup
-  closePhoneModal();
-
-  // Redirect to form page
-  window.location.href = "/join";
-
-} catch (e) {
-  alert("Will be redirect to fill a full form");
-}
-
-  });
-});
-// =====================
-// LAST 15 DAYS DATA FOR POPUP
-// =====================
-const last15DaysData = {
-  van: [
-    { date: "2025-11-15", driver: "John Peterson", miles: 742, rpm: 2.13 },
-    { date: "2025-11-14", driver: "Michael Torres", miles: 815, rpm: 2.25 },
-    { date: "2025-11-13", driver: "Bradley Cooper", miles: 690, rpm: 2.05 },
-    { date: "2025-11-12", driver: "Gary Wilson", miles: 701, rpm: 2.18 },
-    { date: "2025-11-11", driver: "Tom Harris", miles: 663, rpm: 2.09 }
-  ],
-  reefer: [
-    { date: "2025-11-15", driver: "Victor Sanchez", miles: 980, rpm: 2.65 },
-    { date: "2025-11-14", driver: "Leonard White", miles: 1024, rpm: 2.72 },
-    { date: "2025-11-13", driver: "Jorge Martinez", miles: 890, rpm: 2.51 },
-    { date: "2025-11-12", driver: "Carlos Ramirez", miles: 910, rpm: 2.59 },
-    { date: "2025-11-11", driver: "James Howard", miles: 867, rpm: 2.47 }
-  ],
-  flatbed: [
-    { date: "2025-11-15", driver: "Anthony Reed", miles: 620, rpm: 3.45 },
-    { date: "2025-11-14", driver: "Samuel Hayes", miles: 710, rpm: 3.22 },
-    { date: "2025-11-13", driver: "Robert King", miles: 655, rpm: 3.18 },
-    { date: "2025-11-12", driver: "Peter Collins", miles: 700, rpm: 3.30 },
-    { date: "2025-11-11", driver: "Mark Johnson", miles: 640, rpm: 3.12 }
-  ]
-};
-// =====================
-// DAILY MODAL LOGIC
-// =====================
-document.addEventListener("DOMContentLoaded", () => {
-  const dailyModal = document.getElementById("dailyModal");
-  const dailyClose = document.getElementById("dailyClose");
-  const dailyTitle = document.getElementById("dailyModalTitle");
-  const dailyList = document.getElementById("dailyModalList");
-  const dailyApply = document.getElementById("dailyApply");
-  const dailyViewPay = document.getElementById("dailyViewPay");
-  let currentType = null;
-
-  const titles = {
-    van: "Van — last 15 days",
-    reefer: "Reefer — last 15 days",
-    flatbed: "Flatbed — last 15 days"
-  };
-
-  document.querySelectorAll(".daily-category").forEach(card => {
-    card.addEventListener("click", () => {
-      const type = card.getAttribute("data-type");
-      currentType = type;
-
-      const data = last15DaysData[type] || [];
-      let html = "";
-
-      data.forEach(row => {
-        html += `
-          <div class="daily-list-item">
-            <strong>${row.date}</strong>
-            <div>Driver: ${row.driver}</div>
-            <div>Miles: ${row.miles} mi</div>
-            <div>Rate: $${row.rpm}/mi</div>
-          </div>`;
+      await fetch("/api/phone", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ number })
       });
 
-      dailyTitle.textContent = titles[type];
-      dailyList.innerHTML = html;
-      dailyModal.classList.add("show");
-    });
-  });
+      alert("Thank you! We will contact you shortly.");
+      closePhoneModal();
 
-  dailyClose.addEventListener("click", () => dailyModal.classList.remove("show"));
-
-  window.addEventListener("click", e => {
-    if (e.target === dailyModal) dailyModal.classList.remove("show");
-  });
-
-  dailyApply.addEventListener("click", () => {
-    window.location.href = "/join";
-  });
-
-  // ✅ FIX: View driver check pay PDF open
-  dailyViewPay.addEventListener("click", () => {
-    if (!currentType) return;
-
-    let pdfPath = `/documents/${currentType}.pdf`;
-    window.open(pdfPath, "_blank");
+    } catch (e) {
+      alert("Error sending number. Please try again.");
+    }
   });
 });
 
 
-  // Apply → форма за податоци
-  dailyApply.addEventListener("click", () => {
-    window.location.href = "/join";
-  });
+// =====================
+// TOP DAILY COMMENTS
+// =====================
+document.addEventListener('DOMContentLoaded', () => {
+  const modal = document.getElementById('commentsModal');
+  const listEl = document.getElementById('commentsList');
+  const form = document.getElementById('commentForm');
+  const statusEl = document.getElementById('commentStatus');
+  const driverIdInput = document.getElementById('commentDriverId');
+  const titleEl = document.getElementById('commentsTitle');
 
-// CLICK ON "see more details..."
-document.querySelectorAll(".daily-link").forEach(link => {
-  link.addEventListener("click", () => {
-    const type = link.getAttribute("data-type");
-    const data = last15DaysData[type] || [];
+  function openModal() {
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    document.body.classList.add('modal-open');
+  }
 
-    dailyTitle.textContent = titles[type] || "Last 15 days";
+  function closeModal() {
+    if (!modal) return;
+    modal.classList.add('hidden');
+    document.body.classList.remove('modal-open');
+    if (statusEl) statusEl.textContent = '';
+  }
 
-    let html = "";
+  async function loadComments(driverId) {
+    if (!listEl) return;
+    listEl.innerHTML = '<div style="opacity:0.85;">Loading…</div>';
 
-    data.forEach(row => {
-      html += `
-        <div class="daily-list-item">
-          <strong>${row.date}</strong>
-          <div>Driver: ${row.driver}</div>
-          <div>Miles: ${row.miles} mi</div>
-          <div>Rate: $${row.rpm}/mi</div>
-        </div>
-      `;
+    try {
+      const res = await fetch(`/api/comments?driverId=${encodeURIComponent(driverId)}`);
+      const data = await res.json();
+      if (!data.ok) throw new Error('Failed');
+
+      if (!data.comments || data.comments.length === 0) {
+        listEl.innerHTML = '<div style="opacity:0.85;">No comments yet.</div>';
+        return;
+      }
+
+      listEl.innerHTML = data.comments.map(c => {
+        const when = new Date(c.createdAt).toLocaleString();
+        const stars = '★'.repeat(Math.max(1, Math.min(9, Number(c.rating) || 1)));
+        return `
+          <div class="comment-item">
+            <div class="comment-head">
+              <div class="comment-name">${escapeHtml(c.name || 'Anonymous')}</div>
+              <div class="comment-rating">${stars}</div>
+            </div>
+            <div class="comment-text">${escapeHtml(c.text || '')}</div>
+            <div class="comment-when">${when}</div>
+          </div>
+        `;
+      }).join('');
+    } catch (e) {
+      listEl.innerHTML = '<div style="opacity:0.85;">Could not load comments.</div>';
+    }
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+  }
+
+  document.querySelectorAll('.js-open-comments, .js-open-comment-form').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      const card = e.target.closest('[data-driver-id]');
+      const driverId = card ? card.getAttribute('data-driver-id') : '';
+      if (!driverId) return;
+
+      if (driverIdInput) driverIdInput.value = driverId;
+      if (titleEl) titleEl.textContent = 'Comments';
+      openModal();
+      await loadComments(driverId);
+
+      // scroll to form if button is "leave"
+      if (e.target.classList.contains('js-open-comment-form')) {
+        form && form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     });
-
-    if (!html) html = "<p>No data for the last 15 days.</p>";
-
-    dailyList.innerHTML = html;
-    dailyModal.classList.add("show");
   });
+
+  if (modal) {
+    modal.querySelectorAll('[data-close-modal]').forEach(el => el.addEventListener('click', closeModal));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+  }
+
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!statusEl) return;
+
+      statusEl.textContent = 'Sending…';
+
+      const fd = new FormData(form);
+      const payload = Object.fromEntries(fd.entries());
+
+      try {
+        const res = await fetch('/api/comments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (!data.ok) throw new Error('failed');
+
+        statusEl.textContent = 'Submitted! Waiting for approval.';
+        form.reset();
+        // keep driver id
+        if (driverIdInput) driverIdInput.value = payload.driverId;
+      } catch (err) {
+        statusEl.textContent = 'Failed. Please try again.';
+      }
+    });
+  }
 });
 
+
+// =====================
+// TOP DAILY HISTORY (LAST 15 DAYS)
+// =====================
+document.addEventListener('DOMContentLoaded', () => {
+  const modal = document.getElementById('historyModal');
+  const titleEl = document.getElementById('historyTitle');
+  const subtitleEl = document.getElementById('historySubtitle');
+  const listEl = document.getElementById('historyList');
+
+  if (!modal || !titleEl || !listEl) return;
+
+  const closeModal = () => {
+    modal.classList.add('hidden');
+    document.body.classList.remove('modal-open');
+  };
+
+  const openModal = () => {
+    modal.classList.remove('hidden');
+    document.body.classList.add('modal-open');
+  };
+
+  // global close handlers (same pattern as other modals)
+  modal.addEventListener('click', (e) => {
+    if (e.target.matches('[data-close-modal]')) closeModal();
+  });
+  window.addEventListener('keydown', (e) => {
+    if (!modal.classList.contains('hidden') && e.key === 'Escape') closeModal();
+  });
+
+  async function loadHistory(type) {
+    titleEl.textContent = `📅 ${type} — Driver History`;
+    subtitleEl.textContent = 'Last 15 days';
+    listEl.innerHTML = '<div class="muted">Loading…</div>';
+
+    try {
+      const res = await fetch(`/api/topdaily-history?type=${encodeURIComponent(type)}`);
+      const data = await res.json();
+
+      if (!Array.isArray(data) || data.length === 0) {
+        listEl.innerHTML = '<div class="muted">No history yet. Check back tomorrow.</div>';
+        return;
+      }
+
+      listEl.innerHTML = data.map(item => {
+        const date = item.dateLabel || item.date || '';
+        const name = item.driverName || '—';
+        const route = item.route ? `Route: ${item.route}` : '';
+        const miles = (typeof item.miles === 'number') ? `${item.miles} mi` : '';
+        const rpm = (typeof item.rpm === 'number') ? `RPM: ${item.rpm}` : '';
+        const meta = [route, miles, rpm].filter(Boolean).join(' • ');
+
+        return `
+          <div class="history-item">
+            <div class="history-left">
+              <div class="history-date">${date}</div>
+              <div class="history-name">👤 ${name}</div>
+              ${meta ? `<div class="history-meta">${meta}</div>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    } catch (err) {
+      console.error(err);
+      listEl.innerHTML = '<div class="muted">Failed to load history.</div>';
+    }
+  }
+
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.js-open-history');
+    if (!btn) return;
+    e.preventDefault();
+    e.stopPropagation();
+
+    const type = btn.getAttribute('data-type') || btn.dataset.type;
+    if (!type) return;
+
+    loadHistory(type);
+    openModal();
+  });
+});

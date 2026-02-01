@@ -1,0 +1,37 @@
+[
+  {
+    "date": "2026-02-01",
+    "dateLabel": "2026-02-01",
+    "byType": {
+      "Van": "van-1",
+      "Reefer": "reefer-1",
+      "Flatbed": "flatbed-1"
+    },
+    "snapshot": {
+      "Van": {
+        "id": "van-1",
+        "name": "John Peterson",
+        "miles": 742,
+        "rpm": 2.13,
+        "route": "Chicago, IL → Dallas, TX",
+        "type": "Van"
+      },
+      "Reefer": {
+        "id": "reefer-1",
+        "name": "Victor Sanchez",
+        "miles": 980,
+        "rpm": 2.65,
+        "route": "Miami, FL → Cincinnati, OH",
+        "type": "Reefer"
+      },
+      "Flatbed": {
+        "id": "flatbed-1",
+        "name": "Anthony Reed",
+        "miles": 620,
+        "rpm": 3.45,
+        "route": "Denver, CO → Phoenix, AZ",
+        "type": "Flatbed"
+      }
+    }
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "van-1",
+    "type": "Van",
+    "name": "John Peterson",
+    "miles": 742,
+    "rpm": 2.13,
+    "route": "Chicago, IL \u2192 Dallas, TX"
+  },
+  {
+    "id": "reefer-1",
+    "type": "Reefer",
+    "name": "Victor Sanchez",
+    "miles": 980,
+    "rpm": 2.65,
+    "route": "Miami, FL \u2192 Cincinnati, OH"
+  },
+  {
+    "id": "flatbed-1",
+    "type": "Flatbed",
+    "name": "Anthony Reed",
+    "miles": 620,
+    "rpm": 3.45,
+    "route": "Denver, CO \u2192 Phoenix, AZ"
+  }
+]

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PeakDispatch – Video Call</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <div class="page page-call">
+    <header class="nav">
+      <div class="nav-inner">
+        <div class="nav-left">
+          <div class="logo-wrap">
+            <img src="/images/peakdispatch-logo.png" alt="PeakDispatch logo" />
+          </div>
+          <div class="brand-text">
+            <span>PeakDispatch</span>
+            <span>Live video call</span>
+          </div>
+        </div>
+        <div class="nav-cta">
+          <a href="/" class="btn btn-outline">Back</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="call-page">
+      <div class="call-card">
+        <h1 class="section-title" style="margin:0 0 0.6rem;">Video Call</h1>
+        <p class="section-description" style="margin:0 0 1rem;">
+          Click “Start Call” and an admin will get a ringing notification.
+        </p>
+
+        <div class="call-grid">
+          <div class="call-video">
+            <div class="call-label">You</div>
+            <video id="localVideo" autoplay muted playsinline></video>
+          </div>
+          <div class="call-video">
+            <div class="call-label">Admin</div>
+            <video id="remoteVideo" autoplay playsinline></video>
+          </div>
+        </div>
+
+        <div class="call-actions">
+          <button class="btn btn-primary" id="startCallBtn" type="button">Start Call</button>
+          <button class="btn btn-outline" id="hangupBtn" type="button" disabled>Hang up</button>
+        </div>
+
+        <div id="callStatus" style="margin-top:0.8rem; font-size:0.9rem; opacity:0.9;"></div>
+
+        <div class="call-note">
+          <p style="margin:0;">
+            Tip: Allow camera/microphone access when prompted.
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Callback request modal (after 3 minutes unanswered) -->
+    <div class="modal hidden" id="callbackModal" role="dialog" aria-modal="true">
+      <div class="modal-backdrop" data-close-modal></div>
+      <div class="modal-card">
+        <div class="modal-head">
+          <h3>Leave your details</h3>
+          <button class="modal-close" type="button" data-close-modal aria-label="Close">×</button>
+        </div>
+        <div class="modal-body">
+          <p style="margin-top:0; opacity:0.9;">
+            Nobody answered within 3 minutes. Please leave your details and we will contact you as soon as a team member is available.
+          </p>
+          <form id="callbackForm" class="form-grid">
+            <div class="field">
+              <label for="cbName">Name & Surname</label>
+              <input id="cbName" name="name" type="text" required placeholder="Your full name" />
+            </div>
+            <div class="field">
+              <label for="cbPhone">Phone number</label>
+              <input id="cbPhone" name="phone" type="tel" required placeholder="+1 (555) 000-0000" />
+            </div>
+            <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:6px;">
+              <button type="button" class="btn btn-outline" data-close-modal>Close</button>
+              <button type="submit" class="btn btn-primary">Send</button>
+            </div>
+          </form>
+          <div id="callbackMsg" style="margin-top:10px; font-size:0.9rem;"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    window.__VAPID_PUBLIC_KEY__ = "<%= vapidPublicKey %>";
+  </script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/call.js"></script>
+</body>
+</html>

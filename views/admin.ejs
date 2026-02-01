@@ -30,17 +30,240 @@
       <div class="admin-layout">
         <aside class="admin-sidebar">
           <nav class="admin-nav">
-            <span style="font-size:0.78rem;color:var(--pd-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.3rem;">Navigation</span>
+            <span class="admin-nav-kicker">Navigation</span>
+            <a href="#calls">Live calls</a>
+            <a href="#drivers">Top Daily / Drivers</a>
+            <a href="#comments">Comments moderation</a>
             <a href="#content">Site content</a>
             <a href="#submissions">Onboarding submissions</a>
             <a href="#bookings">Booked meetings</a>
           </nav>
+
+          <div class="admin-sidebox">
+            <div style="font-size:0.85rem; opacity:0.85;">Signed in as</div>
+            <div style="font-weight:700; margin-top:0.2rem;"><%= adminEmail %></div>
+            <button class="btn btn-outline btn-sm" id="enablePushBtn" type="button" style="margin-top:0.9rem; width:100%;">Enable push notifications</button>
+            <div class="admin-sidehint" id="pushHint"></div>
+          </div>
         </aside>
+
         <section class="admin-main">
-          <section id="content" style="margin-bottom:2rem;">
+          <!-- Live calls -->
+          <section id="calls" class="admin-section">
+            <h2 class="admin-section-title">Live video calls</h2>
+            <p class="admin-section-desc">
+              When a visitor clicks “Start Call”, you will see it here and you can accept.
+            </p>
+
+            <div class="call-admin-panel">
+              <div class="call-admin-status">
+                <span class="pill" id="adminSocketStatus">Connecting…</span>
+                <audio id="ringtone" src="/sounds/ringtone.wav" preload="auto"></audio>
+              </div>
+
+              <div id="incomingCalls" class="incoming-calls"></div>
+
+              <div class="admin-card" style="margin-top:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
+                  <h3 style="margin:0;">Missed calls / Callback requests</h3>
+                  <button class="btn btn-outline btn-sm" type="button" id="refreshCallbacksBtn">Refresh</button>
+                </div>
+                <div id="callbackRequests" style="margin-top:12px;"></div>
+              </div>
+
+              <div class="call-admin-help">
+                <p style="margin:0; font-size:0.85rem; opacity:0.9;">
+                  To receive ringing even with a closed tab, enable push notifications (browser support required).
+                  On iPhone, this works best if you add the site to the Home Screen.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Drivers / TopDaily -->
+          <section id="drivers" class="admin-section">
+            <h2 class="admin-section-title">Top Daily & drivers</h2>
+            <p class="admin-section-desc">
+              Manage drivers and select who appears in “Top Daily” on the homepage.
+            </p>
+
+            <div class="admin-split">
+              <div class="admin-card">
+                <h3 style="margin:0 0 0.8rem;">Top Daily selection</h3>
+                <form method="POST" action="/admin/topdaily">
+                  <div class="form-grid">
+                    <div class="form-grid-full">
+                      <label class="label" for="topDate">Date label (YYYY-MM-DD)</label>
+                      <input class="input" id="topDate" name="date" value="<%= topDaily.date || '' %>" placeholder="Leave empty for auto" />
+                    </div>
+
+                    <div>
+                      <label class="label" for="topVan">Van</label>
+                      <select class="select" id="topVan" name="topVan">
+                        <option value="">— none —</option>
+                        <% drivers.filter(d => d.type === 'Van').forEach(d => { %>
+                          <option value="<%= d.id %>" <%= (topDaily.byType && topDaily.byType.Van === d.id) ? 'selected' : '' %>><%= d.name %></option>
+                        <% }) %>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label class="label" for="topReefer">Reefer</label>
+                      <select class="select" id="topReefer" name="topReefer">
+                        <option value="">— none —</option>
+                        <% drivers.filter(d => d.type === 'Reefer').forEach(d => { %>
+                          <option value="<%= d.id %>" <%= (topDaily.byType && topDaily.byType.Reefer === d.id) ? 'selected' : '' %>><%= d.name %></option>
+                        <% }) %>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label class="label" for="topFlatbed">Flatbed</label>
+                      <select class="select" id="topFlatbed" name="topFlatbed">
+                        <option value="">— none —</option>
+                        <% drivers.filter(d => d.type === 'Flatbed').forEach(d => { %>
+                          <option value="<%= d.id %>" <%= (topDaily.byType && topDaily.byType.Flatbed === d.id) ? 'selected' : '' %>><%= d.name %></option>
+                        <% }) %>
+                      </select>
+                    </div>
+                  </div>
+                  <div style="margin-top:0.9rem;">
+                    <button class="btn btn-primary" type="submit">Save Top Daily</button>
+                  </div>
+                </form>
+              </div>
+
+              <div class="admin-card">
+                <h3 style="margin:0 0 0.8rem;">Add driver</h3>
+                <form method="POST" action="/admin/drivers/add">
+                  <div class="form-grid">
+                    <div>
+                      <label class="label" for="dType">Truck type</label>
+                      <select class="select" id="dType" name="type">
+                        <option>Van</option>
+                        <option>Reefer</option>
+                        <option>Flatbed</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="label" for="dName">Name</label>
+                      <input class="input" id="dName" name="name" required />
+                    </div>
+                    <div>
+                      <label class="label" for="dMiles">Miles</label>
+                      <input class="input" id="dMiles" name="miles" type="number" min="0" step="1" />
+                    </div>
+                    <div>
+                      <label class="label" for="dRpm">RPM</label>
+                      <input class="input" id="dRpm" name="rpm" type="number" min="0" step="0.01" />
+                    </div>
+                    <div class="form-grid-full">
+                      <label class="label" for="dRoute">Route</label>
+                      <input class="input" id="dRoute" name="route" placeholder="City, ST → City, ST" />
+                    </div>
+                  </div>
+                  <div style="margin-top:0.9rem;">
+                    <button class="btn btn-primary" type="submit">Add driver</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <div class="admin-card" style="margin-top:1.2rem;">
+              <h3 style="margin:0 0 0.8rem;">All drivers</h3>
+
+              <div class="table-wrap">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Type</th>
+                      <th>Name</th>
+                      <th>Miles</th>
+                      <th>RPM</th>
+                      <th>Route</th>
+                      <th style="width:1%;">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% drivers.forEach(d => { %>
+                      <tr>
+                        <td><%= d.type %></td>
+                        <td><%= d.name %></td>
+                        <td><%= d.miles %></td>
+                        <td><%= d.rpm %></td>
+                        <td><%= d.route %></td>
+                        <td>
+                          <form method="POST" action="/admin/drivers/<%= d.id %>/delete" onsubmit="return confirm('Delete this driver?');">
+                            <button class="btn btn-outline btn-sm" type="submit">Delete</button>
+                          </form>
+                        </td>
+                      </tr>
+                    <% }) %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <!-- Comments -->
+          <section id="comments" class="admin-section">
+            <h2 class="admin-section-title">Comments moderation</h2>
+            <p class="admin-section-desc">
+              Public comments go to “pending” and require approval. (Auto-generated fake comments are not implemented.)
+            </p>
+
+            <div class="table-wrap">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>When</th>
+                    <th>Driver</th>
+                    <th>Name</th>
+                    <th>Rating</th>
+                    <th>Text</th>
+                    <th>Status</th>
+                    <th style="width:1%;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% 
+                    const driverMap = {}; 
+                    drivers.forEach(d => driverMap[d.id] = d);
+                    comments.forEach(c => { 
+                  %>
+                    <tr>
+                      <td><%= new Date(c.createdAt).toLocaleString() %></td>
+                      <td><%= (driverMap[c.driverId] ? driverMap[c.driverId].name : c.driverId) %></td>
+                      <td><%= c.name %></td>
+                      <td><%= c.rating %></td>
+                      <td><%= c.text %></td>
+                      <td><span class="pill pill-<%= c.status %>"><%= c.status %></span></td>
+                      <td>
+                        <div style="display:flex; gap:0.4rem;">
+                          <% if (c.status !== 'approved') { %>
+                            <form method="POST" action="/admin/comments/<%= c.id %>/approve">
+                              <button class="btn btn-primary btn-sm" type="submit">Approve</button>
+                            </form>
+                          <% } %>
+                          <% if (c.status !== 'rejected') { %>
+                            <form method="POST" action="/admin/comments/<%= c.id %>/reject">
+                              <button class="btn btn-outline btn-sm" type="submit">Reject</button>
+                            </form>
+                          <% } %>
+                        </div>
+                      </td>
+                    </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- Existing: Content -->
+          <section id="content" class="admin-section">
             <h2 class="admin-section-title">Site content</h2>
-            <p style="font-size:0.85rem;color:var(--pd-muted);margin-bottom:1rem;">
-              Update the main marketing copy used on the public PeakDispatch landing page.
+            <p class="admin-section-desc">
+              Update the main marketing copy used on the public landing page.
             </p>
 
             <form method="POST" action="/admin/content">
@@ -51,59 +274,57 @@
                 </div>
                 <div class="form-grid-full">
                   <label class="label" for="heroSubtitle">Hero subtitle</label>
-                  <textarea class="textarea" id="heroSubtitle" name="heroSubtitle"><%= content.heroSubtitle %></textarea>
+                  <input class="input" type="text" id="heroSubtitle" name="heroSubtitle" value="<%= content.heroSubtitle %>" />
                 </div>
+
                 <div>
-                  <label class="label" for="heroPrimaryCta">Primary CTA label</label>
+                  <label class="label" for="heroPrimaryCta">Primary CTA</label>
                   <input class="input" type="text" id="heroPrimaryCta" name="heroPrimaryCta" value="<%= content.heroPrimaryCta %>" />
                 </div>
                 <div>
-                  <label class="label" for="heroSecondaryCta">Secondary CTA label</label>
+                  <label class="label" for="heroSecondaryCta">Secondary CTA</label>
                   <input class="input" type="text" id="heroSecondaryCta" name="heroSecondaryCta" value="<%= content.heroSecondaryCta %>" />
                 </div>
 
                 <div class="form-grid-full">
-                  <label class="label" for="aboutTitle">About section title</label>
+                  <label class="label" for="aboutTitle">About title</label>
                   <input class="input" type="text" id="aboutTitle" name="aboutTitle" value="<%= content.aboutTitle %>" />
                 </div>
                 <div class="form-grid-full">
-                  <label class="label" for="aboutText">About section text</label>
+                  <label class="label" for="aboutText">About text</label>
                   <textarea class="textarea" id="aboutText" name="aboutText"><%= content.aboutText %></textarea>
                 </div>
 
                 <div class="form-grid-full">
-                  <label class="label" for="servicesTitle">Services section title</label>
+                  <label class="label" for="servicesTitle">Services title</label>
                   <input class="input" type="text" id="servicesTitle" name="servicesTitle" value="<%= content.servicesTitle %>" />
                 </div>
 
-                <div class="form-grid-full">
-                  <label class="label">Service cards</label>
-                </div>
-                <div class="form-grid-full">
+                <div>
                   <label class="label" for="service1Title">Service 1 title</label>
-                  <input class="input" type="text" id="service1Title" name="service1Title" value="<%= content.services[0].title %>" />
+                  <input class="input" type="text" id="service1Title" name="service1Title" value="<%= (content.services && content.services[0] ? content.services[0].title : '') %>" />
                 </div>
-                <div class="form-grid-full">
+                <div>
                   <label class="label" for="service1Text">Service 1 text</label>
-                  <textarea class="textarea" id="service1Text" name="service1Text"><%= content.services[0].text %></textarea>
+                  <textarea class="textarea" id="service1Text" name="service1Text"><%= (content.services && content.services[0] ? content.services[0].text : '') %></textarea>
                 </div>
 
-                <div class="form-grid-full">
+                <div>
                   <label class="label" for="service2Title">Service 2 title</label>
-                  <input class="input" type="text" id="service2Title" name="service2Title" value="<%= content.services[1].title %>" />
+                  <input class="input" type="text" id="service2Title" name="service2Title" value="<%= (content.services && content.services[1] ? content.services[1].title : '') %>" />
                 </div>
-                <div class="form-grid-full">
+                <div>
                   <label class="label" for="service2Text">Service 2 text</label>
-                  <textarea class="textarea" id="service2Text" name="service2Text"><%= content.services[1].text %></textarea>
+                  <textarea class="textarea" id="service2Text" name="service2Text"><%= (content.services && content.services[1] ? content.services[1].text : '') %></textarea>
                 </div>
 
-                <div class="form-grid-full">
+                <div>
                   <label class="label" for="service3Title">Service 3 title</label>
-                  <input class="input" type="text" id="service3Title" name="service3Title" value="<%= content.services[2].title %>" />
+                  <input class="input" type="text" id="service3Title" name="service3Title" value="<%= (content.services && content.services[2] ? content.services[2].title : '') %>" />
                 </div>
-                <div class="form-grid-full">
+                <div>
                   <label class="label" for="service3Text">Service 3 text</label>
-                  <textarea class="textarea" id="service3Text" name="service3Text"><%= content.services[2].text %></textarea>
+                  <textarea class="textarea" id="service3Text" name="service3Text"><%= (content.services && content.services[2] ? content.services[2].text : '') %></textarea>
                 </div>
 
                 <div class="form-grid-full">
@@ -116,115 +337,95 @@
                 </div>
 
                 <div class="form-grid-full">
-                  <label class="label" for="footerText">Footer text</label>
+                  <label class="label" for="footerText">Footer text (use {year})</label>
                   <input class="input" type="text" id="footerText" name="footerText" value="<%= content.footerText %>" />
                 </div>
               </div>
 
-              <div style="margin-top:1rem;display:flex;justify-content:flex-end;">
-                <button class="btn btn-primary" type="submit">Save changes</button>
+              <div style="margin-top: 1.25rem;">
+                <button class="btn btn-primary" type="submit">Save content</button>
               </div>
             </form>
           </section>
 
-          <section id="submissions">
+          <!-- Existing: Submissions -->
+          <section id="submissions" class="admin-section">
             <h2 class="admin-section-title">Onboarding submissions</h2>
-            <p style="font-size:0.85rem;color:var(--pd-muted);margin-bottom:1rem;">
-              Every carrier that fills in the onboarding form appears here. You can review and delete entries after processing them.
-            </p>
 
             <% if (submissions.length === 0) { %>
-              <p style="font-size:0.86rem;color:var(--pd-muted);">No submissions yet.</p>
+              <p class="admin-section-desc">No submissions yet.</p>
             <% } else { %>
-              <div style="overflow:auto;border-radius:1rem;border:1px solid var(--pd-border);">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Submitted</th>
-                      <th>Company</th>
-                      <th>Contact</th>
-                      <th>Fleet size</th>
-                      <th>Equipment</th>
-                      <th>Source</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <% submissions.forEach(function(s) { %>
-                      <tr>
-                        <td><%= new Date(s.createdAt).toLocaleString() %></td>
-                        <td><%= s.company %></td>
-                        <td>
-                          <strong><%= s.firstName %> <%= s.lastName %></strong><br />
-                          <span><%= s.email %></span><br />
-                          <span><%= s.phone %></span>
-                        </td>
-                        <td><span class="badge-pill"><%= s.fleetSize || 'n/a' %></span></td>
-                        <td><%= s.equipmentType || '-' %></td>
-                        <td><%= s.hearAbout || '-' %></td>
-                        <td>
-                          <form method="POST" action="/admin/submissions/<%= s.id %>/delete" onsubmit="return confirm('Delete this submission?');">
-                            <button class="btn btn-outline" type="submit">Delete</button>
-                          </form>
-                        </td>
-                      </tr>
-                    <% }) %>
-                  </tbody>
-                </table>
-              </div>
-            <% } %>
-
-          </section>
-
-          <section id="bookings" style="margin-top:2.5rem;">
-            <h2 class="admin-section-title">Booked meetings</h2>
-            <p style="font-size:0.85rem;color:var(--pd-muted);margin-bottom:1rem;">
-              Every time a carrier requests a meeting, the booking appears here. Update the status as you confirm or reschedule calls.
-            </p>
-
-            <% if (!bookings || bookings.length === 0) { %>
-              <p style="font-size:0.86rem;color:var(--pd-muted);">No meeting requests yet.</p>
-            <% } else { %>
-              <div style="overflow:auto;border-radius:1rem;border:1px solid var(--pd-border);">
+              <div class="table-wrap">
                 <table class="table">
                   <thead>
                     <tr>
                       <th>Date</th>
-                      <th>Time slot</th>
+                      <th>Name</th>
                       <th>Company</th>
-                      <th>Contact</th>
-                      <th>Status</th>
-                      <th></th>
+                      <th>Email</th>
+                      <th>Phone</th>
+                      <th>Fleet</th>
+                      <th>Equipment</th>
+                      <th style="width:1%;">Action</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <% bookings.forEach(function(b) { 
-                         const sub = submissions.find(s => s.id === b.submissionId) || {}; %>
+                    <% submissions.forEach((s) => { %>
                       <tr>
-                        <td><%= b.meetingDate || '-' %></td>
-                        <td><%= b.timeSlot || '-' %></td>
-                        <td><%= sub.company || '-' %></td>
+                        <td><%= new Date(s.createdAt).toLocaleString() %></td>
+                        <td><%= s.firstName %> <%= s.lastName %></td>
+                        <td><%= s.company %></td>
+                        <td><%= s.email %></td>
+                        <td><%= s.phone %></td>
+                        <td><%= s.fleetSize %></td>
+                        <td><%= s.equipmentType %></td>
                         <td>
-                          <strong><%= (sub.firstName || '') + ' ' + (sub.lastName || '') %></strong><br />
-                          <span><%= sub.email || '' %></span><br />
-                          <span><%= sub.phone || '' %></span>
-                        </td>
-                        <td>
-                          <span class="badge-pill"><%= b.status %></span>
-                        </td>
-                        <td>
-                          <form method="POST" action="/admin/bookings/<%= b.id %>/status" style="display:flex;gap:0.35rem;align-items:center;">
-                            <select class="select" name="status" style="max-width:130px;padding-block:0.25rem;font-size:0.75rem;">
-                              <option value="pending" <%= b.status === 'pending' ? 'selected' : '' %>>Pending</option>
-                              <option value="confirmed" <%= b.status === 'confirmed' ? 'selected' : '' %>>Confirmed</option>
-                              <option value="completed" <%= b.status === 'completed' ? 'selected' : '' %>>Completed</option>
-                              <option value="cancelled" <%= b.status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
-                            </select>
-                            <button class="btn btn-outline" type="submit" style="padding-inline:0.7rem;">Update</button>
+                          <form method="POST" action="/admin/submissions/<%= s.id %>/delete" onsubmit="return confirm('Delete this submission?');">
+                            <button class="btn btn-outline btn-sm" type="submit">Delete</button>
                           </form>
                         </td>
                       </tr>
-                    <% }) %>
+                    <% }); %>
+                  </tbody>
+                </table>
+              </div>
+            <% } %>
+          </section>
+
+          <!-- Existing: Bookings -->
+          <section id="bookings" class="admin-section">
+            <h2 class="admin-section-title">Booked meetings</h2>
+
+            <% if (bookings.length === 0) { %>
+              <p class="admin-section-desc">No meetings booked yet.</p>
+            <% } else { %>
+              <div class="table-wrap">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Date requested</th>
+                      <th>Time slot</th>
+                      <th>Status</th>
+                      <th style="width:1%;">Update</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% bookings.forEach((b) => { %>
+                      <tr>
+                        <td><%= b.meetingDate || '(no date)' %></td>
+                        <td><%= b.timeSlot || '(no slot)' %></td>
+                        <td><span class="pill pill-<%= b.status %>"><%= b.status %></span></td>
+                        <td>
+                          <form method="POST" action="/admin/bookings/<%= b.id %>/status">
+                            <select class="select" name="status" onchange="this.form.submit()">
+                              <option value="pending" <%= b.status === 'pending' ? 'selected' : '' %>>pending</option>
+                              <option value="confirmed" <%= b.status === 'confirmed' ? 'selected' : '' %>>confirmed</option>
+                              <option value="cancelled" <%= b.status === 'cancelled' ? 'selected' : '' %>>cancelled</option>
+                            </select>
+                          </form>
+                        </td>
+                      </tr>
+                    <% }); %>
                   </tbody>
                 </table>
               </div>
@@ -233,10 +434,12 @@
         </section>
       </div>
     </main>
-
-    <footer class="footer">
-      © <script>document.write(new Date().getFullYear())</script> PeakDispatch. Admin console.
-    </footer>
   </div>
+
+  <script>
+    window.__VAPID_PUBLIC_KEY__ = "<%= vapidPublicKey %>";
+  </script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/admin.js"></script>
 </body>
 </html>

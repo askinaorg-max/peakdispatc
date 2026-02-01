@@ -26,8 +26,9 @@
           <a href="#" data-section-link="contact">Contact</a>
         </nav>
         <div class="nav-cta">
-          <a href="/join" data-open="join"class="btn btn-outline nav-cta-desktop">Join as Driver</a>
+          <a href="/join" data-open="join"class="btn btn-outline nav-cta-desktop">Join as Carrier</a>
           <a href="/join" data-open="join"class="btn btn-primary nav-cta-desktop">Get Started</a>
+          <a href="/call" class="btn btn-outline nav-cta-desktop">Video Call</a>
           <button class="nav-toggle" type="button" id="navToggle" aria-label="Toggle navigation">
             <span class="nav-toggle-label">Menu</span>
           </button>
@@ -39,7 +40,8 @@
           <a href="#" data-section-link="services" class="nav-mobile-link">Services</a>
           <a href="#" data-section-link="how-it-works" class="nav-mobile-link">How it works</a>
           <a href="#" data-section-link="contact" class="nav-mobile-link">Contact</a>
-          <a href="/join" data-open="join"class="btn btn-primary nav-mobile-cta">Join as Driver</a>
+          <a href="/join" data-open="join"class="btn btn-primary nav-mobile-cta">Join as Carrier</a>
+          <a href="/call" class="btn btn-outline nav-mobile-cta">Video Call</a>
         </div>
       </div>
     </header>
@@ -55,45 +57,92 @@
     </div>
 
     <main>
-	<section class="hero hero--video">
-	<div class="topDaily">
-<h3>Top Daily <BR><span id="dailyDate"></span></h3>
+	<section class="hero hero--image">
+	<div class="topDaily" aria-label="Top Daily">
+  <h3>Top Daily <br><span id="dailyDate"><%= topDailyDate %></span></h3>
 
-   <div class="category daily-category" data-type="van">
-  <h4>Van</h4>
-  <p><b>Name:</b> John Peterson</p>
-  <p><b>Miles:</b> 742 mi</p>
-  <p><b>RPM:</b> 2.13</p>
-  <p><b>Route:</b> Chicago, IL → Dallas, TX</p>
-    <a class="daily-link" data-type="van">see more details...</a>
+  <% const order = ['Van','Reefer','Flatbed']; %>
+  <% order.forEach(function(type){ const d = topByType[type]; %>
+    <div class="category" data-driver-id="<%= d ? d.id : '' %>">
+      <h4><%= type %></h4>
+      <% if (d) { %>
+        <p><b>Name:</b> <%= d.name %></p>
+        <p><b>Miles:</b> <%= d.miles %> mi</p>
+        <p><b>RPM:</b> <%= d.rpm %></p>
+        <p><b>Route:</b> <%= d.route %></p>
+
+        <div class="topdaily-actions">
+          <button class="btn btn-outline btn-sm js-open-comments" type="button">💬 Comments</button>
+          <button class="btn btn-primary btn-sm js-open-comment-form" type="button">✍️ Leave a comment</button>
+          <button class="btn btn-ghost btn-sm js-open-history" type="button" data-type="<%= type %>">📅 History</button>
+        </div>
+      <% } else { %>
+        <p style="opacity:0.8;">No driver selected yet.</p>
+      <% } %>
+    </div>
+  <% }); %>
 </div>
 
-<div class="category daily-category" data-type="reefer">
-  <h4>Reefer</h4>
-  <p><b>Name:</b> Victor Sanchez</p>
-  <p><b>Miles:</b> 980 mi</p>
-  <p><b>RPM:</b> 2.65</p>
-  <p><b>Route:</b> Miami, FL → Cincinnati, OH</p>
-  <a class="daily-link" data-type="reefer">see more details...</a>
+<!-- Comments modal -->
+<div class="modal hidden" id="commentsModal" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" data-close-modal></div>
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3 id="commentsTitle">Comments</h3>
+      <button class="modal-close" type="button" data-close-modal aria-label="Close">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="commentsList" class="comments-list"></div>
 
+      <form id="commentForm" class="comment-form">
+        <h4 style="margin:1rem 0 0.5rem;">Leave a comment</h4>
+        <input type="hidden" id="commentDriverId" name="driverId" />
+        <div class="form-grid">
+          <div>
+            <label class="label" for="commentName">Name</label>
+            <input class="input" id="commentName" name="name" placeholder="Your name (optional)" />
+          </div>
+          <div>
+            <label class="label" for="commentRating">Rating (1–9)</label>
+            <input class="input" id="commentRating" name="rating" type="number" min="1" max="9" value="9" />
+          </div>
+          <div class="form-grid-full">
+            <label class="label" for="commentText">Comment</label>
+            <textarea class="textarea" id="commentText" name="text" placeholder="Write your comment..." required></textarea>
+          </div>
+        </div>
+        <div style="display:flex; gap:0.6rem; align-items:center; margin-top:0.8rem;">
+          <button class="btn btn-primary" type="submit">Submit</button>
+          <span id="commentStatus" style="font-size:0.85rem; opacity:0.85;"></span>
+        </div>
+        <p style="font-size:0.8rem; opacity:0.8; margin-top:0.6rem;">
+          Comments are published after admin approval.
+        </p>
+      </form>
+    </div>
+  </div>
 </div>
 
-<div class="category daily-category" data-type="flatbed">
-  <h4>FlatBed</h4>
-  <p><b>Name:</b> Anthony Reed</p>
-  <p><b>Miles:</b> 620 mi</p>
-  <p><b>RPM:</b> 3.45</p>
-  <p><b>Route:</b> Denver, CO → Phoenix, AZ</p>
-  <a class="daily-link" data-type="flatbed">see more details...</a>
 
+<!-- History modal -->
+<div class="modal hidden" id="historyModal" role="dialog" aria-modal="true">
+  <div class="modal-backdrop" data-close-modal></div>
+  <div class="modal-card modal-card--wide">
+    <div class="modal-head">
+      <h3 id="historyTitle">📅 Driver History</h3>
+      <button class="modal-close" type="button" data-close-modal aria-label="Close">×</button>
+    </div>
+
+    <div class="modal-body">
+      <p class="muted" id="historySubtitle" style="margin-top:0;">Last 15 days</p>
+      <div id="historyList" class="history-list">
+        <div class="muted">Loading…</div>
+      </div>
+    </div>
+  </div>
 </div>
 
-</div>
-  <video class="hero-video" autoplay muted playsinline loop>
-  
-
-    <source src="/videos/hero.mp4" type="video/mp4">
-  </video>
+<div class="hero-bg" aria-hidden="true"></div>
   <div class="hero-overlay"></div>
 
   <div class="hero-content" data-aos="fade-up">
@@ -109,12 +158,12 @@
 
  
 
-      <section id="about" class="section dynamic-section" data-section="about">
+      <section id="about" class="section dynamic-section pd-reveal" data-section="about">
         <div class="section-inner">
           <div class="section-header">
             <div>
               <div class="section-kicker">About PeakDispatch</div>
-              <h2 class="section-title"><%= content.aboutTitle %></h2>
+              <h2 class="section-title pd-reveal"><%= content.aboutTitle %></h2>
             </div>
             <p class="section-description"><%= content.aboutText %></p>
           </div>
@@ -154,12 +203,12 @@
         </div>
       </section>
 
-      <section id="services" class="section dynamic-section" data-section="services">
+      <section id="services" class="section dynamic-section pd-reveal" data-section="services">
         <div class="section-inner">
           <div class="section-header">
             <div>
               <div class="section-kicker">Services</div>
-              <h2 class="section-title"><%= content.servicesTitle %></h2>
+              <h2 class="section-title pd-reveal"><%= content.servicesTitle %></h2>
             </div>
             <p class="section-description">
               From solo owner-operators to growing fleets, we plug into your operation and keep your trucks
@@ -196,12 +245,12 @@
         </div>
       </section>
 
-      <section id="how-it-works" class="section dynamic-section" data-section="how-it-works">
+      <section id="how-it-works" class="section dynamic-section pd-reveal" data-section="how-it-works">
         <div class="section-inner">
           <div class="section-header">
             <div>
               <div class="section-kicker">Process</div>
-              <h2 class="section-title">How working with PeakDispatch feels</h2>
+              <h2 class="section-title pd-reveal">How working with PeakDispatch feels</h2>
             </div>
             <p class="section-description">
               We keep things simple, transparent and structured so you always know what is happening with
@@ -236,7 +285,7 @@
       </section>
 	          
       </section>
-	  <section id="who-we-serve" data-aos="fade-up">
+	  <section id="who-we-serve" class="section dynamic-section pd-reveal" data-section="who-we-serve">
   <h2>Who We Serve</h2>
   <div class="grid-3">
     <article class="card">
@@ -265,7 +314,7 @@
     </article>
   </div>
 </section>
-      <section id="contact" class="section dynamic-section" data-section="contact">
+      <section id="contact" class="section dynamic-section pd-reveal" data-section="contact">
         <div class="section-inner">
           <div class="cta-banner">
             <div class="cta-banner-text">
@@ -348,26 +397,12 @@
     <a id="continueSite" class="continue-link">continue to peakdispatch.net</a>
   </div>
 </div>
-<!-- DAILY DETAILS POPUP -->
-<div id="dailyModal" class="daily-modal">
-  <div class="daily-modal-content">
-    <span class="daily-close" id="dailyClose">&times;</span>
-
-    <h3 id="dailyModalTitle">Last 15 days</h3>
-
-    <div id="dailyModalList" class="daily-list">
-      <!-- Тука со JS ќе се вметнат податоци -->
-    </div>
-
-    <button id="dailyApply" class="btn btn-primary" style="width:100%; margin-top:1rem;">
-      Apply
-    </button>
-	<button id="dailyViewPay" class="btn btn-outline" style="width:100%; margin-top:0.7rem;">
-  View driver check pay
-</button>
-
-  </div>
-</div>
+<!-- Floating Video Call Button (Mobile) -->
+<a href="#"
+   class="floating-btn video-btn"
+   onclick="openVideoCallModal()">
+   🎥 Video Call
+</a>
 
 </body>
 </html>

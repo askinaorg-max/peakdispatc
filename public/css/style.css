@@ -1099,7 +1099,8 @@ a, p, span {
 }
 .cta-float:hover { transform: scale(1.1); }
 .hero--video { position: relative; min-height: 80vh; overflow: hidden; }
-.hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6); }
+\.hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: brightness\(0.6\); }
+.hero-bg { position:absolute; inset:0; background:url("/images/hero-bg.png") center/cover no-repeat; filter: brightness(0.8); }
 .hero-overlay { position: absolute; inset:0; background: radial-gradient(ellipse at center, rgba(0,0,0,.3), rgba(0,0,0,.75)); }
 .hero-content { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 140px 20px 80px; text-align: center; color: #fff; }
 .hero-cta .btn { margin: 10px; }
@@ -1362,99 +1363,362 @@ scrollbar-color: #00baff rgba(255,255,255,0.1);
   text-decoration: underline;
   cursor: pointer;
 }
-/* ===== DAILY MODAL ===== */
-.daily-modal {
+
+
+/* =====================
+   MODAL (Comments)
+   ===================== */
+.modal.hidden { display: none; }
+.modal {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.7);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 99990;
+  z-index: 1000;
 }
-
-.daily-modal.show {
-  display: flex;
-}
-
-.daily-modal-content {
-  background: #ffffff;
-  color: #000;
-  width: 90%;
-  max-width: 480px;
-  border-radius: 14px;
-  padding: 1.8rem;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-  position: relative;
-}
-
-.daily-close {
+.modal-backdrop {
   position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+}
+.modal-card {
+  position: relative;
+  width: min(720px, calc(100vw - 2rem));
+  margin: 6vh auto 0;
+  background: rgba(8, 20, 38, 0.98);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  box-shadow: 0 18px 60px rgba(0,0,0,0.55);
+  overflow: hidden;
+}
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.modal-head h3 { margin: 0; color: #fff; font-size: 1.05rem; }
+.modal-close {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: rgba(255,255,255,0.85);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.modal-body { padding: 1rem 1.1rem 1.2rem; color: rgba(255,255,255,0.92); }
+
+.comments-list {
+  display: grid;
+  gap: 0.75rem;
+  max-height: 38vh;
+  overflow: auto;
+  padding-right: 0.2rem;
+}
+.comment-item {
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 12px;
+  padding: 0.85rem;
+  background: rgba(255,255,255,0.03);
+}
+.comment-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.comment-name { font-weight: 800; }
+.comment-rating { font-size: 0.95rem; opacity: 0.95; }
+.comment-text { margin-top: 0.45rem; line-height: 1.45; opacity: 0.95; }
+.comment-when { margin-top: 0.5rem; font-size: 0.78rem; opacity: 0.75; }
+
+.comment-form .textarea { min-height: 90px; }
+
+/* TopDaily actions */
+.topdaily-actions {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.7rem;
+  flex-wrap: wrap;
+}
+.btn-sm {
+  padding: 0.42rem 0.75rem !important;
+  font-size: 0.85rem !important;
+}
+
+/* =====================
+   ADMIN additions
+   ===================== */
+.admin-nav-kicker {
+  font-size:0.78rem;
+  color:var(--pd-muted);
+  text-transform:uppercase;
+  letter-spacing:0.1em;
+  margin-bottom:0.35rem;
+  display:block;
+}
+.admin-section { margin-bottom: 2.2rem; }
+.admin-section-desc { font-size: 0.88rem; color: var(--pd-muted); margin: 0.35rem 0 1rem; }
+.admin-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.admin-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 1rem;
+}
+.admin-sidebox {
+  margin-top: 1.1rem;
+  padding: 0.95rem;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.admin-sidehint { margin-top: 0.6rem; font-size: 0.78rem; opacity: 0.85; }
+
+.table-wrap { overflow:auto; border-radius: 14px; border: 1px solid rgba(255,255,255,0.08); }
+.table { width: 100%; border-collapse: collapse; min-width: 820px; }
+.table th, .table td {
+  padding: 0.75rem 0.85rem;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  font-size: 0.9rem;
+}
+.table th { text-align: left; font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.8; }
+.table td { opacity: 0.92; }
+.table tr:hover td { background: rgba(255,255,255,0.03); }
+
+.pill {
+  display:inline-flex;
+  align-items:center;
+  gap:0.35rem;
+  padding: 0.22rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.04);
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+.pill-approved { border-color: rgba(0,255,170,0.25); }
+.pill-pending { border-color: rgba(255,215,0,0.25); }
+.pill-rejected { border-color: rgba(255,80,80,0.25); }
+.pill-confirmed { border-color: rgba(0,255,170,0.25); }
+.pill-cancelled { border-color: rgba(255,80,80,0.25); }
+
+.call-admin-panel { display:grid; gap: 0.9rem; }
+.call-admin-status { display:flex; align-items:center; gap: 0.6rem; }
+.incoming-calls { display:grid; gap: 0.7rem; }
+.incoming-card {
+  display:flex;
+  justify-content:space-between;
+  gap: 1rem;
+  align-items:center;
+  padding: 0.9rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.03);
+}
+.incoming-actions { display:flex; gap: 0.5rem; flex-wrap: wrap; }
+.call-admin-help { font-size: 0.85rem; color: var(--pd-muted); }
+
+.toast {
+  position: fixed;
+  bottom: 18px;
+  right: 18px;
+  padding: 0.75rem 0.9rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(8,20,38,0.96);
+  color: rgba(255,255,255,0.92);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  z-index: 1200;
+  max-width: min(360px, calc(100vw - 2rem));
+}
+
+/* =====================
+   CALL page
+   ===================== */
+.call-page { display:flex; justify-content:center; padding: 2rem 1rem 3rem; }
+.call-card {
+  width: min(980px, 100%);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 22px;
+  padding: 1.2rem;
+}
+.call-grid {
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 0.8rem;
+}
+.call-video {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(0,0,0,0.35);
+  aspect-ratio: 16 / 10;
+}
+.call-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.call-label {
+  position:absolute;
   top: 10px;
-  right: 14px;
-  font-size: 26px;
-  cursor: pointer;
+  left: 10px;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(0,0,0,0.55);
+  color: rgba(255,255,255,0.92);
+  font-size: 0.78rem;
+}
+.call-actions { display:flex; gap: 0.7rem; margin-top: 1rem; flex-wrap: wrap; }
+.call-note { margin-top: 0.9rem; font-size: 0.85rem; color: var(--pd-muted); }
+
+/* Responsive tweaks */
+@media (max-width: 860px) {
+  .admin-split { grid-template-columns: 1fr; }
+  .table { min-width: 720px; }
+}
+@media (max-width: 720px) {
+  .call-grid { grid-template-columns: 1fr; }
+  .topDaily { width: min(340px, calc(100vw - 2rem)); right: 1rem; left: 1rem; top: 1rem; }
 }
 
-.daily-list {
-  margin-top: 1rem;
-  max-height: 320px;
-  overflow-y: auto;
-  text-align: left;
-  font-size: 0.95rem;
+
+/* =====================
+   NEW: Hero background + section animations
+   ===================== */
+.page {
+  background: radial-gradient(circle at 20% 0%, rgba(20,241,255,0.10), transparent 55%),
+              radial-gradient(circle at 80% 20%, rgba(59,130,246,0.14), transparent 55%),
+              linear-gradient(180deg, rgba(2,6,23,0.98), rgba(2,6,23,0.92));
+  min-height: 100vh;
 }
 
-.daily-list-item {
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #eee;
+/* Use the new parking image as hero background */
+.hero--video {
+  background-image: url('/images/hero-parking.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
-.daily-list-item:last-child {
-  border-bottom: none;
+.hero--video::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(2,6,23,0.55), rgba(2,6,23,0.85));
+  z-index: 0;
 }
 
-.daily-list-item strong {
-  display: inline-block;
-  min-width: 90px;
-}
-.daily-link {
-  display: inline-block;
-  margin-top: 6px;
-  font-size: 0.82rem;
-  color: #0070c9;
-  text-decoration: underline;
-  cursor: pointer;
-}
-.daily-link:hover {
-  color: #004a85;
-}
-/* FORCE popup titles to be black */
-.daily-modal-content h3,
-.phone-modal-content h2,
-.join-modal-content h2 {
-  color: #000 !important;
-}
-#dailyViewPay {
-  border: 2px solid #083978;
-  color: #083978;
-  background: #fff;
+.hero--video > * { position: relative; z-index: 1; }
+
+/* Dynamic sections: smooth transitions */
+.dynamic-section {
+  display: none;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 280ms ease, transform 280ms ease;
+  will-change: opacity, transform;
 }
 
-#dailyViewPay:hover {
-  background: #083978;
+.dynamic-section.section-active {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+  animation: pdFadeUp 420ms ease both;
+}
+
+@keyframes pdFadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Reveal-on-scroll (used inside sections too) */
+.pd-reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 520ms ease, transform 520ms ease;
+}
+
+.pd-reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Call timeout popup */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+.form-grid .field label { display:block; font-size:0.85rem; opacity:0.9; margin-bottom:6px; }
+.form-grid .field input, .form-grid .field textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(148,163,184,0.25);
+  background: rgba(2,6,23,0.55);
   color: #fff;
+  outline: none;
 }
-/* Make all popup close buttons (X) black /
-.phone-close,
-.join-close,
-.daily-close {
-  color: #000 !important;
+.form-grid .field input:focus, .form-grid .field textarea:focus {
+  border-color: rgba(20,241,255,0.55);
+  box-shadow: 0 0 0 4px rgba(20,241,255,0.10);
 }
 
-/ Optional: darker on hover */
-.phone-close:hover,
-.join-close:hover,
-.daily-close:hover {
-  color: #000 !important;
-  opacity: 0.8;
+.page-call { background-image: linear-gradient(180deg, rgba(2,6,23,0.80), rgba(2,6,23,0.92)), url('/images/hero-parking.png'); background-size: cover; background-position: center; }
+
+.hero--image .hero-video{display:none;}
+
+.btn-ghost{background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); color:#fff;}
+.btn-ghost:hover{background:rgba(255,255,255,0.22);}
+
+.modal-card--wide{max-width:860px;}
+
+.history-list{display:flex;flex-direction:column;gap:10px;}
+.history-item{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border:1px solid rgba(255,255,255,0.12);border-radius:14px;background:rgba(255,255,255,0.06);}
+.history-left{display:flex;flex-direction:column;gap:2px;}
+.history-date{font-weight:800;}
+.history-name{opacity:0.9;}
+.history-meta{opacity:0.75;font-size:0.9rem;}
+
+.floating-btn {
+  position: fixed;
+  bottom: 20px;
+  z-index: 9999;
+  padding: 14px 18px;
+  border-radius: 40px;
+  font-weight: bold;
+  color: #fff;
+  text-decoration: none;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+}
+
+.video-btn {
+  left: 20px;
+  background: #25D366;
+}
+
+/* само на мобилен */
+@media (min-width: 768px) {
+  .video-btn {
+    display: none;
+  }
+}
+.floating-call{right:20px;background:#0d6efd;color:#fff;}
+.floating-call:hover{filter:brightness(1.05);}
+.floating-video{left:20px;background:#198754;color:#fff;}
+.floating-video:hover{filter:brightness(1.05);}
+@media (min-width: 768px) {
+  .video-btn {
+    left: 20px;
+    bottom: 80px; /* да не се судри со Free Strategy Call */
+  }
 }
