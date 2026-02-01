@@ -5,10 +5,14 @@
   const incomingWrap = document.getElementById('incomingCalls');
   const ringtone = document.getElementById('ringtone');
 
-  // --- Uncloseable popup elements (must exist in admin.ejs) ---
-  const popup = document.getElementById('incomingCallPopup');
-  const popupText = document.getElementById('incomingCallPopupText');
-  const popupAccept = document.getElementById('incomingCallPopupAccept');
+  // --- Uncloseable popup elements (resolved lazily; safe even if markup loads later) ---
+  function getPopupEls() {
+    return {
+      popup: document.getElementById('incomingCallPopup'),
+      popupText: document.getElementById('incomingCallPopupText'),
+      popupAccept: document.getElementById('incomingCallPopupAccept')
+    };
+  }
 
   let popupShakeTimer = null;
 
@@ -21,6 +25,8 @@
   socket.on('connect', () => {
     setStatus('Online', 'approved');
     socket.emit('admin-online');
+    // Debug: confirm admin registration
+    // console.log('[ADMIN] emitted admin-online');
   });
 
   socket.on('disconnect', () => {
@@ -40,6 +46,7 @@
   }
 
   function showUncloseablePopup(roomId) {
+    const { popup, popupText, popupAccept } = getPopupEls();
     if (!popup) return;
 
     // Show popup always
@@ -111,6 +118,7 @@
   // OPTIONAL: hide popup when call ends (recommended so it doesn’t stay forever)
   socket.on('call-ended', () => {
     try { stopRingtone(); } catch {}
+    const { popup } = getPopupEls();
     if (popup) popup.classList.add('hidden');
     if (popup) popup.classList.remove('is-shaking');
     if (popupShakeTimer) { clearTimeout(popupShakeTimer); popupShakeTimer = null; }
