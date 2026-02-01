@@ -14,7 +14,15 @@
     };
   }
 
+  const POPUP_MS = 15000;
+
+  // prevent duplicate incoming-call UI (Render/socket can deliver duplicates)
+  const seenRooms = new Map(); // roomId -> lastSeenTs
+  const SEEN_TTL_MS = 4000;
+
+  let popupTimer = null;
   let popupShakeTimer = null;
+  let activePopupRoom = '';
 
   function setStatus(text, kind) {
     if (!statusEl) return;
@@ -25,8 +33,6 @@
   socket.on('connect', () => {
     setStatus('Online', 'approved');
     socket.emit('admin-online');
-    // Debug: confirm admin registration
-    // console.log('[ADMIN] emitted admin-online');
   });
 
   socket.on('disconnect', () => {
@@ -35,6 +41,7 @@
 
   function playRingtone() {
     if (!ringtone) return;
+    ringtone.loop = true;
     ringtone.currentTime = 0;
     ringtone.play().catch(() => {});
   }
@@ -45,33 +52,81 @@
     ringtone.currentTime = 0;
   }
 
-  function showUncloseablePopup(roomId) {
+  function speakIncomingOnce() {
+    try {
+      if (!('speechSynthesis' in window)) return;
+      // stop any previous utterances
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance('Incoming video call');
+      u.rate = 1;
+      u.pitch = 1;
+      window.speechSynthesis.speak(u);
+    } catch {}
+  }
+
+  function hidePopup() {
+    const { popup } = getPopupEls();
+    if (!popup) return;
+
+    popup.classList.add('hidden');
+    popup.classList.remove('is-shaking');
+
+    if (popupTimer) { clearTimeout(popupTimer); popupTimer = null; }
+    if (popupShakeTimer) { clearTimeout(popupShakeTimer); popupShakeTimer = null; }
+
+    activePopupRoom = '';
+    try { stopRingtone(); } catch {}
+  }
+
+  function showPopupForRoom(roomId) {
     const { popup, popupText, popupAccept } = getPopupEls();
     if (!popup) return;
 
-    // Show popup always
+    activePopupRoom = roomId;
+
+    // show
     popup.classList.remove('hidden');
 
-    // Set text + accept link
-    if (popupText) {
-      popupText.textContent = `Room: ${roomId} — Click Accept to answer now.`;
-    }
-    if (popupAccept) {
-      popupAccept.href = `/call?admin=1&room=${encodeURIComponent(roomId)}`;
-    }
+    if (popupText) popupText.textContent = `Room: ${roomId} — Click Accept to answer now.`;
+    if (popupAccept) popupAccept.href = `/call?admin=1&room=${encodeURIComponent(roomId)}`;
 
-    // Shake for 15 seconds, then stop shaking (popup stays)
+    // shake for 15s
     popup.classList.add('is-shaking');
     if (popupShakeTimer) clearTimeout(popupShakeTimer);
     popupShakeTimer = setTimeout(() => {
       popup.classList.remove('is-shaking');
-    }, 15000);
+    }, POPUP_MS);
+
+    // auto hide + stop sound after 15s (popup cannot be manually closed)
+    if (popupTimer) clearTimeout(popupTimer);
+    popupTimer = setTimeout(() => {
+      hidePopup();
+    }, POPUP_MS);
   }
 
-  function showIncoming({ roomId, at }) {
-    if (!incomingWrap) return;
+  function shouldIgnoreRoom(roomId) {
+    if (!roomId) return true;
+    const now = Date.now();
 
+    // purge old
+    for (const [k, ts] of seenRooms.entries()) {
+      if (now - ts > SEEN_TTL_MS) seenRooms.delete(k);
+    }
+
+    const last = seenRooms.get(roomId);
+    if (last && (now - last) < SEEN_TTL_MS) return true;
+
+    seenRooms.set(roomId, now);
+    return false;
+  }
+
+  function showIncoming({ roomId }) {
+    if (!incomingWrap) return;
+    if (shouldIgnoreRoom(roomId)) return;
+
+    // start audio for the same duration as popup
     playRingtone();
+    speakIncomingOnce();
 
     // Desktop notification if allowed
     if ('Notification' in window) {
@@ -80,12 +135,13 @@
       }
     }
 
-    // Uncloseable popup (NEW)
-    showUncloseablePopup(roomId);
+    // Popup (auto hides after 15s)
+    showPopupForRoom(roomId);
 
     // Existing incoming list card (stays as it was)
     const card = document.createElement('div');
     card.className = 'incoming-card';
+    card.dataset.roomId = roomId;
     card.innerHTML = `
       <div class="incoming-meta">
         <div style="font-weight:800;">Incoming call</div>
@@ -100,13 +156,13 @@
     const [acceptBtn, dismissBtn] = card.querySelectorAll('button');
 
     acceptBtn.addEventListener('click', () => {
-      stopRingtone();
+      // stop popup timers + audio
+      hidePopup();
       window.location.href = `/call?admin=1&room=${encodeURIComponent(roomId)}`;
     });
 
     dismissBtn.addEventListener('click', () => {
-      // You asked popup cannot be closed; list dismiss stays "as now".
-      stopRingtone();
+      // popup cannot be closed manually; list dismiss stays.
       card.remove();
     });
 
@@ -115,14 +171,68 @@
 
   socket.on('incoming-call', showIncoming);
 
-  // OPTIONAL: hide popup when call ends (recommended so it doesn’t stay forever)
+  // hide popup when call ends
   socket.on('call-ended', () => {
-    try { stopRingtone(); } catch {}
-    const { popup } = getPopupEls();
-    if (popup) popup.classList.add('hidden');
-    if (popup) popup.classList.remove('is-shaking');
-    if (popupShakeTimer) { clearTimeout(popupShakeTimer); popupShakeTimer = null; }
+    hidePopup();
   });
+
+  // --- Phone leads ---
+  const phoneLeadsWrap = document.getElementById('phoneLeads');
+  const refreshPhoneLeadsBtn = document.getElementById('refreshPhoneLeadsBtn');
+
+  function escapeHtml(str) {
+    return String(str || '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+  }
+
+  async function fetchPhoneLeads() {
+    if (!phoneLeadsWrap) return;
+    phoneLeadsWrap.innerHTML = '<p class="admin-section-desc">Loading…</p>';
+
+    try {
+      const res = await fetch('/api/phone-leads');
+      const data = await res.json();
+      if (!data || !data.ok) {
+        phoneLeadsWrap.innerHTML = '<p class="admin-section-desc">No access or error.</p>';
+        return;
+      }
+
+      const items = data.items || [];
+      if (!items.length) {
+        phoneLeadsWrap.innerHTML = '<p class="admin-section-desc">No phone leads yet.</p>';
+        return;
+      }
+
+      const rows = items.slice(0, 200).map((it) => {
+        const when = (it.createdAt || '').replace('T', ' ').replace('Z', '');
+        return `
+          <tr>
+            <td>${escapeHtml(when)}</td>
+            <td>${escapeHtml(it.name || '—')}</td>
+            <td style="font-weight:800;">${escapeHtml(it.number)}</td>
+          </tr>`;
+      }).join('');
+
+      phoneLeadsWrap.innerHTML = `
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr><th>Created</th><th>Name</th><th>Phone</th></tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      `;
+    } catch {
+      phoneLeadsWrap.innerHTML = '<p class="admin-section-desc">Network error.</p>';
+    }
+  }
+
+  if (refreshPhoneLeadsBtn) refreshPhoneLeadsBtn.addEventListener('click', fetchPhoneLeads);
 
   // --- Callback requests (missed calls) ---
   const callbackWrap = document.getElementById('callbackRequests');
@@ -155,9 +265,9 @@
         const status = it.status === 'closed' ? 'Closed' : 'New';
         card.innerHTML = `
           <div class="incoming-meta">
-            <div style="font-weight:800;">${it.name} <span style="font-weight:600; opacity:0.8;">(${status})</span></div>
-            <div style="font-size:0.85rem; opacity:0.85;">${it.phone}</div>
-            <div style="font-size:0.8rem; opacity:0.7;">${when}</div>
+            <div style="font-weight:800;">${escapeHtml(it.name)} <span style="font-weight:600; opacity:0.8;">(${status})</span></div>
+            <div style="font-size:0.85rem; opacity:0.85;">${escapeHtml(it.phone)}</div>
+            <div style="font-size:0.8rem; opacity:0.7;">${escapeHtml(when)}</div>
           </div>
           <div class="incoming-actions">
             ${it.status === 'closed' ? '' : '<button class="btn btn-outline btn-sm">Mark closed</button>'}
@@ -189,13 +299,22 @@
 
   socket.on('new-callback', () => {
     // refresh list + subtle audio hint
-    playRingtone();
-    setTimeout(() => stopRingtone(), 900);
+    try {
+      if (ringtone) {
+        ringtone.loop = false;
+        ringtone.currentTime = 0;
+        ringtone.play().catch(() => {});
+        setTimeout(() => stopRingtone(), 900);
+      }
+    } catch {}
     fetchCallbacks();
   });
 
   // initial load (after connect)
-  setTimeout(fetchCallbacks, 900);
+  setTimeout(() => {
+    fetchCallbacks();
+    fetchPhoneLeads();
+  }, 900);
 
   socket.on('new-comment', () => {
     const hint = document.createElement('div');

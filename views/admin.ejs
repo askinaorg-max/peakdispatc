@@ -36,6 +36,7 @@
             <a href="#comments">Comments moderation</a>
             <a href="#content">Site content</a>
             <a href="#submissions">Onboarding submissions</a>
+            <a href="#phone-leads">Phone leads</a>
             <a href="#bookings">Booked meetings</a>
           </nav>
 
@@ -393,7 +394,23 @@
           </section>
 
           <!-- Existing: Bookings -->
-          <section id="bookings" class="admin-section">
+    
+          <!-- Phone leads -->
+          <section id="phone-leads" class="admin-section">
+            <h2 class="admin-section-title">Phone leads</h2>
+            <p class="admin-section-desc">Numbers submitted from the “Free Strategy Call” / phone capture forms.</p>
+
+            <div style="display:flex; gap:0.6rem; align-items:center; margin:0.7rem 0;">
+              <button class="btn btn-outline btn-sm" type="button" id="refreshPhoneLeadsBtn">Refresh</button>
+              <span style="opacity:0.8; font-size:0.85rem;">Latest first</span>
+            </div>
+
+            <div id="phoneLeads" class="table-wrap">
+              <p class="admin-section-desc">Loading…</p>
+            </div>
+          </section>
+
+      <section id="bookings" class="admin-section">
             <h2 class="admin-section-title">Booked meetings</h2>
 
             <% if (bookings.length === 0) { %>
@@ -454,18 +471,6 @@
   </script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="/js/admin.js?v=<%= Date.now() %>"></script>
-
-<!-- Incoming call popup (uncloseable) -->
-<div id="incomingCallPopup" class="call-popup hidden" aria-live="assertive">
-  <div class="call-popup-title">📞 Incomming Call</div>
-  <div class="call-popup-sub" id="incomingCallPopupText">Someone is calling you ...</div>
-  <div class="call-popup-actions">
-    <a id="incomingCallPopupAccept" class="btn btn-call-green" href="#" target="_blank" rel="noopener">
-      📞 Accept Call
-    </a>
-    <span style="opacity:0.85;font-size:0.85rem;"></span>
-  </div>
-</div>
 
 </body>
 </html>

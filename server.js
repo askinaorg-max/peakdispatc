@@ -43,6 +43,7 @@ const TOPDAILY_FILE = path.join(DATA_DIR, 'topdaily.json');
 const TOPDAILY_HISTORY_FILE = path.join(DATA_DIR, 'topdaily_history.json');
 const PUSH_SUBS_FILE = path.join(DATA_DIR, 'push-subs.json');
 const CALLBACK_FILE = path.join(DATA_DIR, 'callback_requests.json');
+const PHONE_LEADS_FILE = path.join(DATA_DIR, 'phone_leads.json');
 
 // --- Helpers ---
 function readJsonSafe(filePath, fallback) {
@@ -109,6 +110,13 @@ function loadCallbackRequests() {
 }
 function saveCallbackRequests(items) {
   writeJsonSafe(CALLBACK_FILE, items);
+}
+
+function loadPhoneLeads() {
+  return readJsonSafe(PHONE_LEADS_FILE, []);
+}
+function savePhoneLeads(items) {
+  writeJsonSafe(PHONE_LEADS_FILE, items);
 }
 
 
@@ -452,8 +460,23 @@ app.get('/call', (req, res) => {
 
 // --- Phone lead endpoint (optional SMTP via env) ---
 app.post('/api/phone', async (req, res) => {
-  const number = req.body.number;
+  const number = (req.body && req.body.number) ? String(req.body.number).trim() : '';
+  const name = (req.body && req.body.name) ? String(req.body.name).trim().slice(0, 80) : '';
   if (!number) return res.status(400).json({ ok: false });
+
+  // Save lead locally so admin can always see it
+  try {
+    const items = loadPhoneLeads();
+    items.push({
+      id: uuidv4(),
+      createdAt: new Date().toISOString(),
+      name,
+      number
+    });
+    savePhoneLeads(items);
+  } catch (e) {
+    console.error('Saving phone lead failed', e);
+  }
 
   try {
     await sendPhoneLeadEmail(number);
@@ -478,6 +501,13 @@ app.post('/admin/login', (req, res) => {
 
 app.get('/admin/logout', (req, res) => {
   req.session.destroy(() => res.redirect('/admin/login'));
+});
+
+// --- Phone leads (from Free Strategy Call popup) ---
+app.get('/api/phone-leads', (req, res) => {
+  if (!req.session || !req.session.isAdmin) return res.status(401).json({ ok: false, error: 'Unauthorized' });
+  const items = loadPhoneLeads().sort((a,b) => (b.createdAt||'').localeCompare(a.createdAt||''));
+  res.json({ ok: true, items });
 });
 
 
