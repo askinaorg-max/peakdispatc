@@ -698,13 +698,22 @@ const io = new Server(server);
 // --- Socket signaling ---
 io.on('connection', (socket) => {
   socket.on('admin-online', () => {
+    socket.data.isAdmin = true;
     socket.join('admins');
   });
 
   socket.on('start-call', (data) => {
     const roomId = data && data.roomId ? data.roomId : uuidv4();
     socket.join(roomId);
-    io.to('admins').emit('incoming-call', { roomId, at: new Date().toISOString() });
+    const payload = { roomId, at: new Date().toISOString() };
+    // Notify all admins (room broadcast)
+    io.to('admins').emit('incoming-call', payload);
+    // Extra safety: also emit directly to sockets marked as admin
+    for (const [, s] of io.of('/').sockets) {
+      if (s && s.data && s.data.isAdmin) {
+        try { s.emit('incoming-call', payload); } catch {}
+      }
+    }
     sendPushToAll({ type: 'incoming-call', roomId }).catch(() => {});
     socket.emit('call-room', { roomId });
   });
