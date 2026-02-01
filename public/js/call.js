@@ -19,17 +19,33 @@
   let callTimeoutId = null;
   const CALL_TIMEOUT_MS = 3 * 60 * 1000;
 
-  // --- ICE buffering (FIX for "remote description was null") ---
+  // ICE buffering
   const pendingIce = [];
 
   function setStatus(msg) {
     if (statusEl) statusEl.textContent = msg || '';
   }
 
-  const iceServers = [
+  // IMPORTANT: must be "let" so we can replace with Twilio TURN servers
+  let iceServers = [
     { urls: 'stun:stun.l.google.com:19302' },
     { urls: 'stun:stun1.l.google.com:19302' }
   ];
+
+  async function loadIceServers() {
+    try {
+      const res = await fetch('/api/ice', { cache: 'no-store' });
+      const data = await res.json();
+      if (data && Array.isArray(data.iceServers) && data.iceServers.length) {
+        iceServers = data.iceServers;
+        console.log('Loaded ICE servers:', iceServers);
+      } else {
+        console.warn('No ICE servers from /api/ice, using STUN only.');
+      }
+    } catch (e) {
+      console.warn('Failed to load /api/ice, using STUN only.', e);
+    }
+  }
 
   async function initMedia() {
     if (localStream) return localStream;
@@ -51,7 +67,6 @@
     };
 
     pc.ontrack = (e) => {
-      // Some browsers deliver streams, some deliver individual tracks
       if (e.streams && e.streams[0]) {
         remoteVideo.srcObject = e.streams[0];
       } else if (remoteVideo) {
@@ -60,7 +75,6 @@
         remoteVideo.srcObject = ms;
       }
 
-      // Mark connected when we start receiving media
       connected = true;
       if (callTimeoutId) { clearTimeout(callTimeoutId); callTimeoutId = null; }
       setStatus('Connected.');
@@ -68,13 +82,11 @@
 
     pc.onconnectionstatechange = () => {
       const st = pc.connectionState;
-      if (st === 'failed' || st === 'disconnected' || st === 'closed') {
-        // do not force close instantly on 'disconnected' (mobile can recover),
-        // but if it fails, clean up.
-        if (st === 'failed') {
-          setStatus('Connection failed. Try again.');
-          cleanup();
-        }
+      console.log('pc.connectionState:', st);
+
+      if (st === 'failed') {
+        setStatus('Connection failed. Try again.');
+        cleanup();
       }
     };
 
@@ -85,7 +97,6 @@
     const stream = await initMedia();
     const peer = ensurePC();
 
-    // Prevent adding tracks multiple times
     const senders = peer.getSenders ? peer.getSenders() : [];
     const alreadyHas = (track) => senders.some(s => s.track && s.track.id === track.id);
 
@@ -95,7 +106,6 @@
   }
 
   async function flushPendingIce(peer) {
-    // Add buffered ICE candidates after remoteDescription exists
     if (!peer || !peer.remoteDescription) return;
 
     while (pendingIce.length) {
@@ -109,9 +119,7 @@
   }
 
   function cleanup() {
-    try {
-      if (pc) pc.close();
-    } catch {}
+    try { if (pc) pc.close(); } catch {}
     pc = null;
 
     pendingIce.length = 0;
@@ -129,10 +137,12 @@
     if (startBtn) startBtn.disabled = true;
     if (hangupBtn) hangupBtn.disabled = false;
 
+    // IMPORTANT: load TURN servers BEFORE creating RTCPeerConnection
+    await loadIceServers();
+
     await attachTracks();
 
-    // Ask server to create room and notify admins
-    socket.emit('start-call', { roomId: '' });
+    socket.emit('start-call', { roomId: roomId || '' });
   }
 
   async function joinRoomAs(role) {
@@ -145,7 +155,6 @@
     await joinRoomAs('caller');
     setStatus('Ringing admin…');
 
-    // Start unanswered timer (3 minutes) for caller only
     if (!isAdmin) {
       if (callTimeoutId) clearTimeout(callTimeoutId);
       callTimeoutId = setTimeout(() => {
@@ -163,12 +172,12 @@
 
     if (callTimeoutId) { clearTimeout(callTimeoutId); callTimeoutId = null; }
 
-    // Caller makes offer when admin joins
     setStatus('Connecting…');
 
     const peer = ensurePC();
     const offer = await peer.createOffer();
     await peer.setLocalDescription(offer);
+
     socket.emit('signal', { roomId, message: { type: 'offer', sdp: offer } });
   });
 
@@ -179,6 +188,11 @@
     try {
       if (message.type === 'offer' && isAdmin) {
         setStatus('Connecting…');
+
+        // IMPORTANT: load TURN before attach/create PC (in case admin page loads first)
+        // if pc already exists, it’s okay; but best effort:
+        if (!pc) await loadIceServers();
+
         await attachTracks();
 
         await peer.setRemoteDescription(new RTCSessionDescription(message.sdp));
@@ -186,6 +200,7 @@
 
         const answer = await peer.createAnswer();
         await peer.setLocalDescription(answer);
+
         socket.emit('signal', { roomId, message: { type: 'answer', sdp: answer } });
       }
 
@@ -199,7 +214,6 @@
       }
 
       if (message.type === 'candidate') {
-        // Candidate can arrive before remoteDescription -> buffer
         const cand = message.candidate;
         if (!cand) return;
 
@@ -229,7 +243,7 @@
   if (startBtn) startBtn.addEventListener('click', () => startCall().catch(() => setStatus('Could not start call.')));
   if (hangupBtn) hangupBtn.addEventListener('click', () => hangup());
 
-  // Admin flow: join fixed room
+  // Admin flow
   if (isAdmin) {
     startBtn && (startBtn.disabled = true);
     hangupBtn && (hangupBtn.disabled = false);
@@ -238,9 +252,12 @@
     if (!roomId) {
       setStatus('Missing room id.');
     } else {
+      // IMPORTANT: load TURN servers before creating PC/tracks
+      loadIceServers()
+        .then(() => attachTracks())
+        .catch(() => setStatus('Please allow camera/mic.'));
+
       joinRoomAs('admin');
-      // We wait for the offer
-      attachTracks().catch(() => setStatus('Please allow camera/mic.'));
     }
   }
 
@@ -271,7 +288,6 @@
       const fd = new FormData(callbackForm);
       const name = String(fd.get('name') || '').trim();
       const phone = String(fd.get('phone') || '').trim();
-
       if (!name || !phone) return;
 
       try {
@@ -293,7 +309,6 @@
     });
   }
 
-  // cleanup on unload
   window.addEventListener('beforeunload', () => {
     try { if (roomId) socket.emit('end-call', { roomId }); } catch {}
   });

@@ -102,6 +102,7 @@ function loadComments() {
 }
 function saveComments(comments) {
   writeJsonSafe(COMMENTS_FILE, comments);
+}
 
 function loadCallbackRequests() {
   return readJsonSafe(CALLBACK_FILE, []);
@@ -109,6 +110,7 @@ function loadCallbackRequests() {
 function saveCallbackRequests(items) {
   writeJsonSafe(CALLBACK_FILE, items);
 }
+
 
 }
 
@@ -303,6 +305,38 @@ app.get('/', (req, res) => {
 
   res.render('index', { content, footerText, topDailyDate: dateLabel, topByType });
 });
+
+// --- ICE servers (Twilio TURN/STUN for WebRTC) ---
+app.get('/api/ice', async (req, res) => {
+  try {
+    const accountSid = process.env.TWILIO_ACCOUNT_SID;
+    const authToken = process.env.TWILIO_AUTH_TOKEN;
+
+    // fallback ако немаш env во Render (ќе работи локално понекогаш, ама не стабилно)
+    if (!accountSid || !authToken) {
+      return res.json({
+        iceServers: [
+          { urls: 'stun:stun.l.google.com:19302' },
+          { urls: 'stun:stun1.l.google.com:19302' }
+        ]
+      });
+    }
+
+    const client = require('twilio')(accountSid, authToken);
+    const token = await client.tokens.create(); // returns ICE servers (includes TURN relays)
+
+    res.json({ iceServers: token.iceServers || token.ice_servers || [] });
+  } catch (err) {
+    console.error('ICE /api/ice error:', err);
+    res.json({
+      iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' }
+      ]
+    });
+  }
+});
+
 
 app.get('/join', (req, res) => res.render('join'));
 
