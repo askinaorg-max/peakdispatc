@@ -5,6 +5,13 @@
   const incomingWrap = document.getElementById('incomingCalls');
   const ringtone = document.getElementById('ringtone');
 
+  // --- Uncloseable popup elements (must exist in admin.ejs) ---
+  const popup = document.getElementById('incomingCallPopup');
+  const popupText = document.getElementById('incomingCallPopupText');
+  const popupAccept = document.getElementById('incomingCallPopupAccept');
+
+  let popupShakeTimer = null;
+
   function setStatus(text, kind) {
     if (!statusEl) return;
     statusEl.textContent = text;
@@ -32,6 +39,28 @@
     ringtone.currentTime = 0;
   }
 
+  function showUncloseablePopup(roomId) {
+    if (!popup) return;
+
+    // Show popup always
+    popup.classList.remove('hidden');
+
+    // Set text + accept link
+    if (popupText) {
+      popupText.textContent = `Room: ${roomId} — Click Accept to answer now.`;
+    }
+    if (popupAccept) {
+      popupAccept.href = `/call?admin=1&room=${encodeURIComponent(roomId)}`;
+    }
+
+    // Shake for 15 seconds, then stop shaking (popup stays)
+    popup.classList.add('is-shaking');
+    if (popupShakeTimer) clearTimeout(popupShakeTimer);
+    popupShakeTimer = setTimeout(() => {
+      popup.classList.remove('is-shaking');
+    }, 15000);
+  }
+
   function showIncoming({ roomId, at }) {
     if (!incomingWrap) return;
 
@@ -44,6 +73,10 @@
       }
     }
 
+    // Uncloseable popup (NEW)
+    showUncloseablePopup(roomId);
+
+    // Existing incoming list card (stays as it was)
     const card = document.createElement('div');
     card.className = 'incoming-card';
     card.innerHTML = `
@@ -65,6 +98,7 @@
     });
 
     dismissBtn.addEventListener('click', () => {
+      // You asked popup cannot be closed; list dismiss stays "as now".
       stopRingtone();
       card.remove();
     });
@@ -74,6 +108,13 @@
 
   socket.on('incoming-call', showIncoming);
 
+  // OPTIONAL: hide popup when call ends (recommended so it doesn’t stay forever)
+  socket.on('call-ended', () => {
+    try { stopRingtone(); } catch {}
+    if (popup) popup.classList.add('hidden');
+    if (popup) popup.classList.remove('is-shaking');
+    if (popupShakeTimer) { clearTimeout(popupShakeTimer); popupShakeTimer = null; }
+  });
 
   // --- Callback requests (missed calls) ---
   const callbackWrap = document.getElementById('callbackRequests');
@@ -102,7 +143,7 @@
       items.forEach((it) => {
         const card = document.createElement('div');
         card.className = 'incoming-card';
-        const when = (it.createdAt || '').replace('T',' ').replace('Z','');
+        const when = (it.createdAt || '').replace('T', ' ').replace('Z', '');
         const status = it.status === 'closed' ? 'Closed' : 'New';
         card.innerHTML = `
           <div class="incoming-meta">
@@ -137,6 +178,7 @@
   }
 
   if (refreshCallbacksBtn) refreshCallbacksBtn.addEventListener('click', fetchCallbacks);
+
   socket.on('new-callback', () => {
     // refresh list + subtle audio hint
     playRingtone();
@@ -147,9 +189,7 @@
   // initial load (after connect)
   setTimeout(fetchCallbacks, 900);
 
-
   socket.on('new-comment', () => {
-    // subtle hint only; admin can refresh comments section
     const hint = document.createElement('div');
     hint.className = 'toast';
     hint.textContent = 'New comment submitted (pending approval).';
@@ -209,7 +249,7 @@
 
   if (enablePushBtn) {
     enablePushBtn.addEventListener('click', () => {
-      enablePush().catch((e) => setPushHint('Failed to enable push.'));
+      enablePush().catch(() => setPushHint('Failed to enable push.'));
     });
   }
 })();
