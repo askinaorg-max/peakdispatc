@@ -112,7 +112,7 @@ function saveCallbackRequests(items) {
 }
 
 
-}
+
 
 function loadTopDaily() {
   return readJsonSafe(TOPDAILY_FILE, { date: '', byType: {} });
